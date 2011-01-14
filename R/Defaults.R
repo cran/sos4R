@@ -1,0 +1,391 @@
+################################################################################
+# Copyright (C) 2010 by 52 North                                               #
+# Initiative for Geospatial Open Source Software GmbH                          #
+#                                                                              #
+# Contact: Andreas Wytzisk                                                     #
+# 52 North Initiative for Geospatial Open Source Software GmbH                 #
+# Martin-Luther-King-Weg 24                                                    #
+# 48155 Muenster, Germany                                                      #
+# info@52north.org                                                             #
+#                                                                              #
+# This program is free software; you can redistribute and/or modify it under   #
+# the terms of the GNU General Public License version 2 as published by the    #
+# Free Software Foundation.                                                    #
+#                                                                              #
+# This program is distributed WITHOUT ANY WARRANTY; even without the implied   #
+# WARRANTY OF MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU #
+# General Public License for more details.                                     #
+#                                                                              #
+# You should have received a copy of the GNU General Public License along with #
+# this program (see gpl-2.0.txt). If not, write to the Free Software           #
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or #
+# visit the Free Software Foundation web page, http://www.fsf.org.             #
+#                                                                              #
+# Author: Daniel Nuest (daniel.nuest@uni-muenster.de)                          #
+# Created: 2010-06-18                                                          #
+# Project: sos4R - visit the project web page, http://www.nordholmen.net/sos4r #
+#                                                                              #
+################################################################################
+
+#
+# This class is inspired by a suggestion from Duncan Murdoch
+# (https://stat.ethz.ch/pipermail/r-help/2010-July/245480.html)
+#
+
+#
+# A short list of some example services, no guarantee about compatibility with 
+# sos4R or quality of data, accessible using accessor/getter function.
+#
+.sosExampleServices <- list(
+		"http://v-swe.uni-muenster.de:8080/WeatherSOS/sos",
+		"http://v-sos.uni-muenster.de:8080/PegelOnlineSOSv2/sos",
+		"http://v-sos.uni-muenster.de:8080/AirQualityEurope/sos",
+		"http://mmisw.org/oostethys/sos",
+		"http://www.gomoos.org/cgi-bin/sos/oostethys_sos.cgi"
+		)
+names(.sosExampleServices) <- list(
+		"52 North SOS: Weather Data, station at IFGI, Muenster, Germany",
+		"52 North SOS: Water gauge data for Germany",
+		"52 North SOS: Air Quality Data for Europe",
+		"OOTethys SOS: Marine Metadata Interoperability Initiative (MMI)",
+		"OOTethys SOS: Gulf of Maine Ocean Observing System SOS"
+		)
+SosExampleServices <- function() {
+	return(.sosExampleServices)
+}
+
+# List of the default parsing functions. The names of the list are the
+# names of the respective XML documents set in Constants.R.
+.sosDefaultParsers <- list(
+		parseSosCapabilities,
+		parseSensorML,
+		parseOM,
+		parseOM,
+		parseOwsExceptionReport,
+		#
+		parseMeasurement,
+		parseObservationProperty,
+		parseObservation,
+		parseObservationCollection,
+		parseResult,
+		parseDataArray,
+		parseElementType,
+		parseEncoding,
+		parseValues,
+		#
+		parseGeometryObservation,
+		parseCategoryObservation,
+		parseCountObservation,
+		parseTruthObservation,
+		parseTemporalObservation,
+		parseComplexObservation,
+		#
+		parseCSV,
+		parseOM)
+names(.sosDefaultParsers) <- list(
+		sosGetCapabilitiesName,
+		sosDescribeSensorName,
+		sosGetObservationName,
+		sosGetObservationByIdName,
+		owsExceptionReportName,
+		#
+		omMeasurementName,
+		omMemberName,
+		omObservationName,
+		omObservationCollectionName,
+		omResultName,
+		sweDataArrayName,
+		sweElementTypeName,
+		sweEncodingName,
+		sweValuesName,
+		#
+		omGeometryObservationName,
+		omCategoryObservationName,
+		omCountObservationName,
+		omTruthObservationName,
+		omTemporalObservationName,
+		omComplexObservationName,
+		#
+		mimeTypeCSV,
+		mimeTypeOM)
+
+# Using a different approach for the encoders here, because there is more than
+# one way of encoding something (in contrast to parsing). So the different 
+# objects (and versions) override the respective encoding functions. 
+.sosDefaultEncoders <- list(
+		encodeRequestKVP,
+		encodeRequestXML,
+		encodeRequestSOAP)
+names(.sosDefaultEncoders) <- list(
+		.sosConnectionMethodGet,
+		.sosConnectionMethodPost,
+		.sosConnectionMethodSOAP
+		)
+		
+#
+#
+#
+.sosDefaultFieldConverters <- list(
+		sosConvertTime,
+		sosConvertTime,
+		sosConvertTime,
+		sosConvertTime,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertDouble,
+		sosConvertString
+		)
+names(.sosDefaultFieldConverters) <- list(
+		"urn:ogc:data:time:iso8601",
+		"urn:ogc:property:time:iso8601",
+		"urn:ogc:phenomenon:time:iso8601",
+		sosTimeName,
+		"m", # meter
+		"s", # second
+		"g", # gram
+		"rad", # radian
+		"K", # Kelvin
+		"C", # Coulomb
+		"cd", # candela
+		"%", # percent
+		"ppth", # parts per thousand
+		"ppm", # parts per million
+		"ppb", # parts per billion
+		"pptr", # parts per trillion
+		"mol", # mole
+		"sr", # steradian
+		"Hz", # Hertz
+		"N", # Newton
+		"Pa", # Pascal (pressure)
+		"J", # Joule (energy)
+		"W", # Watt (power)
+		"A", # Ampere (electric current)
+		"V", # Volt
+		"F", # Farad
+		"Ohm", # Ohm
+		"S", # Siemens
+		"Wb", # Weber
+		"Cel", # degree Celsius
+		"T", # Tesla (magnetic flux density)
+		"H", # Henry (inductance)
+		"lm", # lumen (luminous flux)
+		"lx", # lux (illuminance)
+		"Bq", # Becquerel (radioactivity)
+		"Gy", # Gray (energy dose)
+		"Sv", # Sievert (dose equivalent)
+		"gon", # gon, grade
+		"deg", # degree
+		"'", # minute
+		"''", # second
+		"l", # liter
+		"L", # liter
+		"ar", # are (area)
+		"t", # tonne (mass) 
+		"bar", # bar (pressure) 
+		"u", # unified atomic mass unit (mass)
+		"eV", # electronvolt (energy)
+		"AU", # astronomic unit (length)
+		"pc", # parsec (length)
+		"degF", # degree Fahrenheit 
+		"hPa", # hektopascal
+		"mm", # millimeter
+		"nm", # nanometer
+		"cm", # centimeter
+		"km", # kilometer
+		"m/s", # meter per second
+		"kg", # kilogramm
+		"mg", # milligram
+		"uom", # fallback if actual unit is not given
+		"urn:ogc:data:feature"
+		)
+
+
+################################################################################
+# access methods
+
+SosParsingFunctions <- function (..., include = character(0), exclude = character(0)) {
+	.merge(els = list(...), defaults = .sosDefaultParsers,
+			include = include, exclude)
+}
+
+SosEncodingFunctions <- function (..., include = character(0), exclude = character(0)) {
+	.merge(els = list(...), defaults = .sosDefaultEncoders,
+			include = include, exclude)
+}
+
+SosDefaultConnectionMethod <- function() {
+	return(.sosConnectionMethodPost)
+}
+
+SosDataFieldConvertingFunctions <- function (..., include = character(0),
+		exclude = character(0)) {
+	.merge(els = list(...), defaults = .sosDefaultFieldConverters,
+			include = include, exclude = exclude)
+}
+
+#
+# Function originally written by Duncan Temple Lang for the package SSOAP
+# (http://www.omegahat.org/SSOAP/, file SOAP.S), adapted here to include add all
+# defaults if an element with the same name is not given.
+#
+# Order: 	FIRST adding defaults for not given names,
+#			THEN inclusion, THEN exclusion
+#
+.merge <- function (els, defaults, include = NULL, exclude = NULL) {
+	if (length(els) > 0) {
+		# which elements are given?
+		.which <- match(names(defaults), names(els))
+		# add defaults (including names) for all that are not given
+		.missing <- is.na(.which)
+		.missingNames <- names(defaults)[.missing]
+		#cat("missing names: "); print(.missingNames)
+		els[.missingNames] <- defaults[.missing]
+	}
+	# no replacements given, base in-/exclusion on all defaults
+	else els <- defaults
+	
+	if (length(include)) {
+		els <- els[include]
+	}
+	else if (length(exclude)) {
+		.which <- match(exclude, names(els))
+		if (any(!is.na(.which))) 
+			els <- els[-(.which[!is.na(.which)])]
+	}
+	
+	return(els)
+}
+
+#
+# Dummy parsing function if a user wants to inspect the responses unprocessed.
+# This works for all but capabilities, as these need to be requested on creating
+# a new SOS instance.
+#
+parseNoParsing <- function(obj) {
+	return(obj)	
+}
+.sosDisabledParsers <- list(
+		parseSosCapabilities, # if this is removed, no more SOS instances can be created! 
+		parseNoParsing,
+		parseNoParsing,
+		parseNoParsing,
+		parseNoParsing)
+names(.sosDisabledParsers) <- list(
+		sosGetCapabilitiesName,
+		sosDescribeSensorName,
+		sosGetObservationName,
+		sosGetObservationByIdName,
+		owsExceptionReportName)
+SosDisabledParsers <- function() {
+	return(.sosDisabledParsers)
+}
+
+################################################################################
+# other defaults
+
+sosDefaultCharacterEncoding <- "UTF-8"
+sosDefaultDescribeSensorOutputFormat <- SosSupportedResponseFormats()[2]
+sosDefaultGetCapSections <- c("All")
+sosDefaultGetCapAcceptFormats <- c("text/xml")
+sosDefaultGetCapOwsVersion <- "1.1.0"
+sosDefaultGetObsResponseFormat <- SosSupportedResponseFormats()[[1]]
+sosDefaultTimeFormat <- "%Y-%m-%dT%H:%M:%OS"
+sosDefaultFilenameTimeFormat <- "%Y-%m-%d_%H:%M:%OS"
+sosDefaultTempOpPropertyName <- "om:samplingTime"
+sosDefaultTemporalOperator <- SosSupportedTemporalOperators()[[ogcTempOpTMDuringName]]
+sosDefaultSpatialOpPropertyName <- "urn:ogc:data:location"
+
+# use for the names created data.frames
+sosDefaultColumnNameFeatureIdentifier <- "feature"
+sosDefaultColumnNameLat <- "lat"
+sosDefaultColumnNameLon <- "lon"
+sosDefaultColumnNameSRS <- "SRS"
+
+
+SosDefaults <- function() {
+	.defaults <- list(sosDefaultCharacterEncoding,
+			sosDefaultDescribeSensorOutputFormat,
+			sosDefaultGetCapSections,
+			sosDefaultGetCapAcceptFormats,
+			sosDefaultGetCapOwsVersion,
+			sosDefaultGetObsResponseFormat,
+			sosDefaultTimeFormat,
+			sosDefaultFilenameTimeFormat,
+			sosDefaultTempOpPropertyName,
+			sosDefaultTemporalOperator,
+			sosDefaultSpatialOpPropertyName,
+			sosDefaultColumnNameFeatureIdentifier,
+			sosDefaultColumnNameLat,
+			sosDefaultColumnNameLon,
+			sosDefaultColumnNameSRS)
+	names(.defaults) <- list("sosDefaultCharacterEncoding",
+			"sosDefaultDescribeSensorOutputFormat",
+			"sosDefaultGetCapSections",
+			"sosDefaultGetCapAcceptFormats",
+			"sosDefaultGetCapOwsVersion",
+			"sosDefaultGetObsResponseFormat",
+			"sosDefaultTimeFormat",
+			"sosDefaultFilenameTimeFormat",
+			"sosDefaultTempOpPropertyName",
+			"sosDefaultTemporalOperator",
+			"sosDefaultSpatialOpPropertyName",
+			"sosDefaultColumnNameFeatureIdentifier",
+			"sosDefaultColumnNameLat",
+			"sosDefaultColumnNameLon",
+			"sosDefaultColumnNameSRS")
+	
+	return(.defaults)
+}

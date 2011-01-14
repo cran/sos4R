@@ -36,7 +36,8 @@ SOS <- function(url, method = SosDefaultConnectionMethod(),
 		dataFieldConverters = SosDataFieldConvertingFunctions(),
 		curlOptions = list(),
 		curlHandle = getCurlHandle(),
-		timeFormat = sosDefaultTimeFormat, verboseOutput = FALSE, ...) {
+		timeFormat = sosDefaultTimeFormat, verboseOutput = FALSE, 
+		switchCoordinates = FALSE, ...) {
 	if(version == "1.0.0") {
 		if(method == .sosConnectionMethodPost)
 			.curlOpts <- curlOptions(url = url)
@@ -56,7 +57,8 @@ SOS <- function(url, method = SosDefaultConnectionMethod(),
 				curlOptions = .curlOpts,
 				curlHandle = curlHandle,
 				timeFormat = timeFormat,
-				verboseOutput = verboseOutput)
+				verboseOutput = verboseOutput,
+				switchCoordinates = switchCoordinates)
 		
 		.caps <- getCapabilities(sos = .sos, verbose = verboseOutput, ...)
 		if(!is(.caps, "OwsCapabilities")) {
@@ -390,7 +392,7 @@ setMethod(f = "getCapabilities", signature = signature(sos = "SOS_1.0.0"),
 	}
 	else {
 		.parsingFunction <- sosParsers(sos)[[sosDescribeSensorName]]
-		.sml <- .parsingFunction(obj = .response)
+		.sml <- .parsingFunction(obj = .response, sos = sos, verbose = verbose)
 		return(.sml)
 	}
 }
@@ -521,7 +523,10 @@ setMethod(f = "getObservationById",
 	
 	# responseFormat starts with text/xml OR the response string is XML content,
 	# for example an exeption (which is xml even if request wants something else
-	if(isXMLString(.responseString)) {
+	.contentType <- NA_character_
+	.contentType <- attributes(.responseString)[["Content-Type"]]
+	
+	if(isXMLString(.responseString) || .contentType == mimeTypeXML) {
 		if(verbose) cat("Got XML string as response.\n")
 		
 		.response <- xmlParseDoc(.responseString, asText = TRUE)
@@ -569,7 +574,7 @@ setMethod(f = "getObservationById",
 				length(.obs), "observation(s) having", sum(.resultLength),
 				"result values [", toString(.resultLength), "].\n")
 		if(saveOriginal) .msg <- paste(.msg, "\tOriginal document saved:",
-					.filename)
+					.filename, "\n")
 		cat(.msg)
 		
 		return(.obs)
@@ -609,7 +614,8 @@ setMethod(f = "getObservationById",
 	# not xml nor csv
 	if(verbose || inspect) {
 		cat("** UNKNOWN RESPONSE FORMAT:\n")
-		print(.responseString)
+		cat(.responseString, "\n")
+		cat("Content-Type: ", .contentType)
 		warning("Unknown response format!")
 	}
 	
@@ -894,10 +900,10 @@ setMethod("encodeRequestXML", "SosGetObservation",
 	}
 	
 	if( !is.na(obj@responseFormat)) {
+		.rF <- gsub(obj@responseFormat, pattern = "&quot;", replacement = "\"")
+		
 		.responseFormat <- xmlNode(name = "responseFormat",
-				namespace = sosNamespacePrefix,
-				gsub(obj@responseFormat, pattern = "&quot;",
-						replacement = '"'))
+				namespace = sosNamespacePrefix, value = .rF)
 		.xmlDoc <- addChildren(node = .xmlDoc, kids = list(.responseFormat),
 				append = TRUE)
 	}
@@ -955,10 +961,9 @@ setMethod("encodeRequestXML", "SosGetObservationById",
 			obj@observationId)
 	.xmlDoc <- addChildren(node = .xmlDoc, .obsId)
 	
+	.rF <- gsub(obj@responseFormat, pattern = "&quot;", replacement = "\"")
 	.responseFormat <- xmlNode(name = "responseFormat",
-			namespace =  sosNamespacePrefix,
-			gsub(obj@responseFormat, pattern = "&quot;",
-					replacement = '"'))
+			namespace =  sosNamespacePrefix, .rF)
 	.xmlDoc <- addChildren(node = .xmlDoc, kids = list(.responseFormat),
 			append = TRUE)
 	
@@ -1200,7 +1205,7 @@ setMethod(f = "checkRequest",
 			# check if output format is supported by sos
 			.oFSupported <- FALSE
 			.supportedFormats <- .dsOperation@parameters[["outputFormat"]];
-			.format <- gsub(operation@outputFormat, pattern = "&quot;",
+			.format <- gsub(operation@outputFormat, pattern = "\\&quot;",
 					replacement = '"')
 			
 			if(!any(sapply(.supportedFormats,

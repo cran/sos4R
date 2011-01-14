@@ -418,4 +418,80 @@ parseComponent <- function(obj, sos, verbose = FALSE) {
 	return(.component)
 }
 
+#
+#
+#
+parseSwePosition <- function(obj, sos, verbose = FALSE) {
+	.rF <- xmlGetAttr(node = obj, name = "referenceFrame")
+	if(verbose) cat("[parseSwePosition] with referenceFrame", .rF, "\n")
+	
+	.location <- obj[[sweLocationName]]
+	.parser <- sosParsers(sos)[[sweLocationName]]
+	
+	.pos <- .parser(.location, sos = sos, verbose = verbose)
+	
+	.oldAttrs <- attributes(.pos)
+	attributes(.pos) <- c(.oldAttrs, list(referenceFrame = .rF))
+	
+	return(.pos)
+}
 
+#
+#
+#
+parseLocation <- function(obj, sos, verbose = FALSE) {
+	.vector <- obj[[sweVectorName]]
+	.id <- xmlGetAttr(node = obj, name = "id")
+	if(verbose) cat("[parseLocation] with id", .id, "\n")
+	
+	.parser <- sosParsers(sos)[[sweVectorName]]
+	
+	.pos <- .parser(.vector, sos = sos, verbose = verbose)
+	return(.pos)
+}
+
+#
+#
+#
+parseVector <- function(obj, sos, verbose = FALSE) {
+	.children <- .filterXmlChildren(node = obj, childrenName = sweCoordinateName)
+	
+	.coords <- list()
+	for (i in seq(1, length(.children))) {
+		.c <- .children[[i]]
+		
+		.coord <- parseCoordinate(.c, sos = sos, verbose = verbose)
+		.coords <- c(.coords, list(.coord))
+		
+		if(verbose) cat("[parseVector] parsed coordinate: ", toString(.coord),
+					"\n")
+	}
+
+	return(.coords)
+}
+
+#
+#
+#
+parseCoordinate <- function(obj, sos, verbose = FALSE) {
+	.name <- xmlGetAttr(node = obj, name = "name", default = NA_character_)
+	if(verbose) cat("[parseCoordinate] with name", .name, "\n")
+
+	.quantity <- obj[[sweQuantityName]]
+	.axisID <- xmlGetAttr(.quantity, name = "axisID", default = NA_character_)
+	if(verbose) cat("axisID: ", .axisID, "\n")
+	
+	.uomCode <- NA_character_
+	if(!is.null(.quantity[[sweUomName]]))
+		.uomCode <- xmlGetAttr(node = .quantity[[sweUomName]], name = "code",
+				default = NA_character_)
+	if(verbose) cat("uomCode: ", .uomCode, "\n")
+	
+	.value <- NA_character_
+	if(!is.null(.quantity[[sweValueName]]))
+		.value <- as.double(xmlValue(.quantity[[sweValueName]]))
+	if(verbose) cat("value: ", .value, "\n")
+	
+	return(list(name = .name, axisID = .axisID, uomCode = .uomCode,
+					value = .value))
+}

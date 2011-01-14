@@ -203,7 +203,9 @@ setMethod(f = "sosOperations", signature = signature(obj = "SOS"),
 setMethod(f = "sosOperations",
 		signature = signature(obj = "SosCapabilities_1.0.0"),
 		def = function(obj) {
-			return(obj@operations@operations)
+			if(!is.null(obj@operations))
+				return(obj@operations@operations)
+			return(NA_character_)
 		})
 # required to handle the first capabilities request:
 setMethod(f = "sosOperations",
@@ -238,6 +240,15 @@ setMethod(f = "sosVersion", signature = signature(sos = "SOS"),
 		def = function(sos) {
 			return(sos@version)
 		})
+if (!isGeneric("sosSwitchCoordinates"))
+	setGeneric(name = "sosSwitchCoordinates", def = function(sos) {
+				standardGeneric("sosSwitchCoordinates")
+			})
+setMethod(f = "sosSwitchCoordinates", signature = signature(sos = "SOS"),
+		def = function(sos) {
+			return(sos@switchCoordinates)
+		})
+
 
 if (!isGeneric("sosMethod"))
 	setGeneric(name = "sosMethod", def = function(sos) {
@@ -255,6 +266,9 @@ if (!isGeneric("sosProcedures"))
 setMethod(f = "sosProcedures", signature = signature(obj = "SOS"),
 		def = function(obj) {
 			.offerings <- sosOfferings(obj)
+			if(length(.offerings) == 1 && is.na(.offerings))
+				return(NA_character_)
+			
 			.p <- lapply(.offerings, sosProcedures)
 			names(.p) <- names(.offerings)
 			return(.p)
@@ -296,7 +310,11 @@ if (!isGeneric("sosObservedProperties"))
 			})
 setMethod(f = "sosObservedProperties", signature = signature(obj = "SOS"),
 		def = function(obj) {
-			.op <- lapply(sosOfferings(obj), sosObservedProperties)
+			.offerings <- sosOfferings(obj)
+			if(length(.offerings) == 1 && is.na(.offerings))
+				return(NA_character_)
+			
+			.op <- lapply(.offerings, sosObservedProperties)
 			return(.op)
 		})
 setMethod(f = "sosObservedProperties", signature = signature(
@@ -358,8 +376,8 @@ setMethod(f = "sosBoundedBy", signature = signature(
 			return(.boundedBy(obj, bbox))
 		})
 setMethod(f = "sosBoundedBy", signature = signature(obj = "list"),
-		def = function(obj) {
-			.bb <- lapply(obj, sosBoundedBy)
+		def = function(obj, bbox = FALSE) {
+			.bb <- lapply(obj, sosBoundedBy, bbox = bbox)
 			return(.bb)
 		})
 setMethod(f = "sosBoundedBy",
@@ -380,8 +398,8 @@ setMethod(f = "sosBoundedBy",
 		max1 <- as.double(.uC[[1]])
 		max2 <- as.double(.uC[[2]])
 		
-		.bb <- matrix(c(min1, min2, max1, max2), ncol = 2,
-				dimnames = list(c("coords.lat", "coords.lon"),
+		.bb <- matrix(c(min2, min1, max2, max1), ncol = 2,
+				dimnames = list(c("coords.lon", "coords.lat"),
 						c("min", "max")))
 	}
 	else {
@@ -397,7 +415,11 @@ if (!isGeneric("sosOfferings"))
 			})
 setMethod(f = "sosOfferings", signature = signature(obj = "SOS"),
 		def = function(obj, offeringIDs = c(), name = NA) {
-			.offerings <- obj@capabilities@contents@observationOfferings
+			.contents <- sosContents(obj)
+			if(is.null(.contents))
+				return(NA_character_)
+			
+			.offerings <- .contents@observationOfferings
 			if(!is.na(name)) {
 				for (.o in .offerings) {
 					.currentName <- sosName(.o)
@@ -417,7 +439,10 @@ if (!isGeneric("sosOfferingIds"))
 			})
 setMethod(f = "sosOfferingIds", signature = signature(sos = "SOS"),
 		def = function(sos) {
-			return(names(sosOfferings(sos)))
+			.offerings <- sosOfferings(sos)
+#			if(length(.offerings) == 1 && !is.na(.offerings))
+			return(names(.offerings))
+#			else return(NA_character_)
 		})
 
 if (!isGeneric("sosFeaturesOfInterest"))
@@ -623,11 +648,15 @@ if (!isGeneric("sosTime"))
 setMethod(f = "sosTime", signature = signature(obj = "SOS"),
 		def = function(obj) {
 			.caps <- sosCaps(obj)
-			.getOb <- .caps@operations@operations[[sosGetObservationName]]
-			.time <- .getOb@parameters$eventTime
-			if(is.list(.time) && length(.time) == 1)
-				return(.time[[1]])
-			return(.time)
+			.operations <- sosOperations(obj)
+			if(length(.operations) > 1 && !is.na(.operations)) {
+				.getOb <- .caps@operations@operations[[sosGetObservationName]]
+				.time <- .getOb@parameters$eventTime
+				if(is.list(.time) && length(.time) == 1)
+					return(.time[[1]])
+				return(.time)
+			}
+			else return(NA_character_)
 		})
 setMethod(f = "sosTime", signature = signature(
 				obj = "SosObservationOffering"),
@@ -766,11 +795,23 @@ setMethod(f = "sosResult", signature = signature(obj = "OwsExceptionReport"),
 			warning("OwsExceptionReport does not have a result set.")
 			return(toString(obj))
 		})
+setMethod(f = "sosResult", signature = signature(obj = "character"),
+		def = function(obj, coordinates = FALSE) {
+			warning(paste("No processable result given: ", obj))
+			return(toString(obj))
+		})
 
 if (!isGeneric("sosCoordinates"))
-	setGeneric(name = "sosCoordinates", def = function(obj) {
+	setGeneric(name = "sosCoordinates", def = function(obj, ...) {
 				standardGeneric("sosCoordinates")
 			})
+setMethod(f = "sosCoordinates",
+		signature = signature(obj = "SosObservationOffering"),
+		def = function(obj) {
+			.off.spatial <- as(obj, "Spatial")
+			.coords <- coordinates(.off.spatial)
+			return(.coords)
+		})
 setMethod(f = "sosCoordinates",
 		signature = signature(obj = "OmObservationCollection"),
 		def = function(obj) {
@@ -833,8 +874,11 @@ setMethod(f = "sosCoordinates",
 		})
 setMethod(f = "sosCoordinates",
 		signature = signature(obj = "list"),
-		def = function(obj) {
-			.list <- lapply(obj, sosCoordinates)
+		def = function(obj, sos = NULL, verbose = FALSE) {
+			if(is.null(sos))
+				.list <- lapply(obj, sosCoordinates)
+			else .list <- lapply(obj, sosCoordinates, sos = sos, verbose = verbose)
+
 			.coords <- do.call(rbind, .list)
 			return(.coords)
 		})
@@ -918,6 +962,42 @@ setMethod(f = "sosName", signature = signature(obj = "OwsGetCapabilities"),
 			return(sosGetCapabilitiesName)
 		})
 
+if (!isGeneric("sosTitle"))
+	setGeneric(name = "sosTitle", def = function(obj) {
+				standardGeneric("sosTitle")
+			})
+setMethod(f = "sosTitle", signature = signature(obj = "SOS"),
+		def = function(obj) {
+			if(!is.null(sosServiceIdentification(obj)))
+				.s <- sosTitle(sosServiceIdentification(obj))
+			else .s <- NA_character_
+			
+			return(.s)
+		})
+setMethod(f = "sosTitle",
+		signature = signature(obj = "OwsServiceIdentification"),
+		def = function(obj) {
+			return(toString(obj@title))
+		})
+
+if (!isGeneric("sosAbstract"))
+	setGeneric(name = "sosAbstract", def = function(obj) {
+				standardGeneric("sosAbstract")
+			})
+setMethod(f = "sosAbstract", signature = signature(obj = "SOS"),
+		def = function(obj) {
+			if(!is.null(sosServiceIdentification(obj)))
+				.s <- sosAbstract(sosServiceIdentification(obj))
+			else .s <- NA_character_
+			
+			return(.s)
+		})
+setMethod(f = "sosAbstract",
+		signature = signature(obj = "OwsServiceIdentification"),
+		def = function(obj) {
+			return(toString(obj@abstract))
+		})
+
 
 ################################################################################
 # conversion methods and accessor function
@@ -968,8 +1048,9 @@ setMethod(f = "sosCreateTimeInstant",
 		signature = signature(sos = "SOS", time = "POSIXt"),
 		def = function(sos, time, frame, calendarEraName,
 				indeterminatePosition) {
-			.time <- format(time, sos@timeFormat)
-			.timePos <- GmlTimePosition(time = strptime(.time, sos@timeFormat),
+			.time <- format(time, sosTimeFormat(sos))
+			.timePos <- GmlTimePosition(
+					time = strptime(.time, sosTimeFormat(sos)),
 					frame = frame, calendarEraName = calendarEraName,
 					indeterminatePosition = indeterminatePosition)
 			.ti <- GmlTimeInstant(timePosition = .timePos)
@@ -991,17 +1072,14 @@ setMethod(f = "sosCreateTimePeriod",
 		signature = signature(sos = "SOS", begin = "POSIXt", end = "POSIXt"),
 		def = function(sos, begin, end, frame, calendarEraName,
 				indeterminatePosition, duration, timeInterval) {
+			.tf <- sosTimeFormat(sos)
 			.beginPos <- GmlTimePosition(
-					time = strptime(
-							format(begin, sos@timeFormat),
-							sos@timeFormat),
+					time = strptime(format(begin, .tf), .tf),
 					frame = frame, calendarEraName = calendarEraName,
 					indeterminatePosition = indeterminatePosition
 			)
 			.endPos <- GmlTimePosition(
-					time = strptime(
-							format(end, sos@timeFormat),
-							sos@timeFormat),
+					time = strptime(format(end, .tf), .tf),
 					frame = frame, calendarEraName = calendarEraName,
 					indeterminatePosition = indeterminatePosition
 			)
@@ -1289,12 +1367,10 @@ setMethod(f = "sosGetCRS",
 			return(.crs)
 		}
 )
-
 setMethod(f = "sosGetCRS",
-		signature = c(obj = "OmObservation"),
+		signature = c(obj = "OmObservationCollection"),
 		def = function(obj) {
-			.char <- as.vector(sosCoordinates(obj)[[sosDefaultColumnNameSRS]])
-			.l <- sapply(X = .char, FUN = sosGetCRS)
+			.l <- lapply(X = obj, FUN = sosGetCRS)
 			.l <- unique(.l)
 			
 			if(length(.l) == 1)
@@ -1302,6 +1378,55 @@ setMethod(f = "sosGetCRS",
 			else return(.l)
 		}
 )
+setMethod(f = "sosGetCRS",
+		signature = c(obj = "OmObservation"),
+		def = function(obj) {
+			.crs <- .getCRSfromOM(obj)
+			return(.crs)
+		}
+)
+setMethod(f = "sosGetCRS",
+		signature = c(obj = "OmMeasurement"),
+		def = function(obj) {
+			.crs <- .getCRSfromOM(obj)
+			return(.crs)
+		}
+)
+setMethod(f = "sosGetCRS",
+		signature = c(obj = "SosObservationOffering"),
+		def = function(obj) {
+			.srsName <- sosBoundedBy(obj)[["srsName"]]
+			.crs <- sosGetCRS(.srsName)
+			return(.crs)
+		}
+)
+setMethod(f = "sosGetCRS",
+		signature = c(obj = "SOS"),
+		def = function(obj) {
+			.offs <- sosOfferings(obj)
+			.crss <- lapply(.offs, sosGetCRS)
+			if(length(.crss) == 1)
+				return(.crss[[1]])
+			return(.crss)
+		}
+)
+setMethod(f = "sosGetCRS",
+		signature = c(obj = "list"),
+		def = function(obj) {
+			.crs <- lapply(X = obj, FUN = sosGetCRS)
+			return(.crs)
+		}
+)
+
+.getCRSfromOM <- function(obj) {
+	.char <- as.vector(sosCoordinates(obj)[[sosDefaultColumnNameSRS]])
+	.l <- sapply(X = .char, FUN = sosGetCRS)
+	.l <- unique(.l)
+	
+	if(length(.l) == 1)
+		return(.l[[1]])
+	else return(.l)
+}
 
 #
 #
@@ -1322,3 +1447,18 @@ setMethod(f = "sosGetDCP",
 		}
 )
 
+
+################################################################################
+#
+sosChanges <- function() {
+	.libloc <- Sys.getenv("R_LIBS_USER")
+	if(length(.libloc) < 1)
+		.libloc <- Sys.getenv("R_LIBS")
+	
+	.path <- paste(Sys.getenv("R_LIBS_USER"), "sos4R", "CHANGES", sep = "/")
+	.con <- file(.path)
+	.lines <- readLines(.con)
+	close(.con)	
+	
+	cat(.lines, sep = "\n")
+}

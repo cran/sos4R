@@ -71,11 +71,13 @@ SosSupportedConnectionMethods <- function() {
 }
 
 mimeTypeCSV <- "text/csv"
-mimeTypeOM <- 'text/xml;subtype="om/1.0.0&quot"'
+mimeTypeXML <- "text/xml"
+mimeTypeOM <- "text/xml;subtype=&quot;om/1.0.0&quot;"
+mimeTypeSML <- "text/xml;subtype=&quot;sensorML/1.0.1&quot;"
 
 .sosSupportedResponseFormats <- c(
-		"text/xml;subtype=&quot;om/1.0.0&quot;",
-		"text/xml;subtype=&quot;sensorML/1.0.1&quot;",
+		mimeTypeOM,
+		mimeTypeSML,
 		mimeTypeCSV)
 SosSupportedResponseFormats <- function() {
 	return(.sosSupportedResponseFormats)
@@ -104,6 +106,12 @@ SosSupportedServiceVersions <- function() {
 		gml = "http://www.opengis.net/gml")
 .sosNamespaceDefinitionsGetCap <- c(ows = "http://www.opengis.net/ows/1.1",
 		ogc = "http://www.opengis.net/ogc")
+.sosNamespaceDefinitionsSML <- c(sml = "http://www.opengis.net/sensorML/1.0.1",
+		gml = "http://www.opengis.net/gml",
+		swe = "http://www.opengis.net/swe/1.0.1",
+		xlink = "http://www.w3.org/1999/xlink",
+		xsi = "http://www.w3.org/2001/XMLSchema-instance")
+		
 
 .xsiSchemaLocationAttribute <- c("xsi:schemaLocation" = "http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd")
 
@@ -201,6 +209,10 @@ sweValueName <- "value"
 sweCodeSpaceName <- "codeSpace"
 sweTextName <- "Text"
 sweUomName <- "uom"
+sweVectorName <- "Vector"
+sweLocationName <- "location"
+sweCoordinateName <- "coordinate"
+swePositionName <- "Position"
 
 ################################################################################
 # OGC
@@ -304,6 +316,7 @@ ogcComparisonOperatorsName <- "ComparisonOperators"
 ogcArithmeticOperatorsName <- "ArithmeticOperators"
 ogcEIDName <- "EID"
 ogcFIDName <- "FID"
+ogcLiteralName <- "Literal"
 
 ################################################################################
 # OWS

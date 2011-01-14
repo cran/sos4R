@@ -10,6 +10,16 @@
 \alias{SensorML}
 \alias{sml}
 
+\alias{sosId,SensorML-method}
+\alias{sosName,SensorML-method}
+\alias{sosAbstract,SensorML-method}
+\alias{sosCoordinates,SensorML-method}
+
+\alias{as.SensorML.SpatialPointsDataFrame}
+\alias{plot.SensorML}
+
+\alias{plot,SensorML,missing-method}
+
 \title{Classes of the Namespace sml}
 
 \description{
@@ -24,6 +34,7 @@ Objects can be created by calls to the construction method in the form \code{Sen
 
 \section{Slots}{
   \describe{
+    \item{\code{coords}:}{Object of class \code{"data.frame"}, holds the position of the sensor.}
     \item{\code{xml}:}{Object of class \code{"XMLInternalDocument"}, holds the XML representation of the sensor description.}
   }
 }
@@ -45,15 +56,13 @@ Objects can be created by calls to the construction method in the form \code{Sen
 \examples{
 showClass("SensorML")
 
-# create a XmlInternalDocument and a SensorML class with it
-xml <- xmlParse("<SensorML />")
-sml <- SensorML(xml)
-
-# print it
-print(sml)
-
-# access the inner document
-sml@xml
+\dontrun{
+weathersos <- SOS("http://v-swe.uni-muenster.de:8080/WeatherSOS/sos")
+proc1 <- sosProcedures(weathersos)[[1]][[1]]
+proc1.descr <- describeSensor(weathersos, proc1, verbose = TRUE)
+plot(proc1.descr)
+class(proc1.descr)
+}
 
 }
 

@@ -25,6 +25,9 @@
 \alias{sosFeaturesOfInterest,OmObservationCollection}
 \alias{sosFeaturesOfInterest,OmObservationCollection-method}
 
+\alias{as.SpatialPointsDataFrame.OmObservationCollection}
+\alias{sosGetCRS,OmObservationCollection-method}
+
 \title{Class "OmObservationCollection"}
 
 \description{

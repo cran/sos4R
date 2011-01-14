@@ -31,8 +31,8 @@
 # See OWS Common, OGC 06-121r9
 #
 setClass("SensorML",
-		representation(xml = "XMLInternalDocument"),
-		prototype = list(xml = NULL),
+		representation(xml = "XMLInternalDocument", coords = "data.frame"),
+		prototype = list(xml = NULL, coords = data.frame()),
 		validity = function(object) {
 			#print("Entering validation: SensorML")
 			return(TRUE)

@@ -22,7 +22,7 @@
 # visit the Free Software Foundation web page, http://www.fsf.org.             #
 #                                                                              #
 # Author: Daniel Nuest (daniel.nuest@uni-muenster.de)                          #
-# Created: 2010-09-15                                                          #
+# Created: 2011-02-11                                                          #
 # Project: sos4R - visit the project web page, http://www.nordholmen.net/sos4r #
 #                                                                              #
 ################################################################################
@@ -30,12 +30,29 @@
 #
 #
 #
-parseSamplingPoint <- function(obj, sos) {
-	.sampledFeatures <- list(obj[saSampledFeatureName])
-	.position <- parsePosition(obj[[saPositionName]], sos = sos)
-	.id <-xmlGetAttr(node = obj, name = "id", default = NA_character_)
+as.SensorML.SpatialPointsDataFrame = function(from) {
+	.coords <- from@coords
+	.crds <- .coords[,c("x", "y")]
+	.crs <- sosGetCRS(attributes(.coords)[["referenceFrame"]])
 	
-	.sp <- SaSamplingPoint(sampledFeatures = .sampledFeatures,
-			position = .position, id = .id)
+	.notCoordCols <- !colnames(.coords)%in%c("x", "y")
+	.otherData <- data.frame(.coords[,.notCoordCols])
+	colnames(.otherData) <- colnames(.coords)[.notCoordCols]
+
+	.sp <- SpatialPointsDataFrame(coords = .crds,
+			data = .otherData,
+			proj4string = .crs)
+	
 	return(.sp)
 }
+setAs("SensorML", "SpatialPointsDataFrame", 
+		function(from) {
+			as.SensorML.SpatialPointsDataFrame(from)
+		}
+)
+setAs("SensorML", "Spatial", 
+		function(from) {
+			as.SensorML.SpatialPointsDataFrame(from)
+		}
+)
+

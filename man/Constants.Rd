@@ -45,6 +45,7 @@
 \alias{ogcGeometryOperandPointName}
 \alias{ogcGeometryOperandLineStringName}
 \alias{ogcIntersectsName}
+\alias{ogcLiteralName}
 \alias{ogcLogicalOperatorsName}
 \alias{ogcNamespacePrefix}
 \alias{ogcOverlapsName}
@@ -185,6 +186,10 @@
 \alias{sweCodeSpaceName}
 \alias{sweTextName}
 \alias{sweUomName}
+\alias{sweCoordinateName}
+\alias{sweLocationName}
+\alias{swePositionName}
+\alias{sweVectorName}
 \alias{xmlInternalDocumentName}
 \alias{xmlTextNodeName}
 \alias{OwsExceptionsData}
@@ -201,6 +206,8 @@
   
 \alias{mimeTypeCSV}
 \alias{mimeTypeOM}
+\alias{mimeTypeSML}
+\alias{mimeTypeXML}
 
 
 \title{Constants in sos4R}

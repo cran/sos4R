@@ -22,7 +22,7 @@
 # visit the Free Software Foundation web page, http://www.fsf.org.             #
 #                                                                              #
 # Author: Daniel Nuest (daniel.nuest@uni-muenster.de)                          #
-# Created: 2010-06-18                                                          #
+# Created: 2011-02-09                                                          #
 # Project: sos4R - visit the project web page, http://www.nordholmen.net/sos4r #
 #                                                                              #
 ################################################################################
@@ -30,30 +30,30 @@
 #
 #
 #
-SensorML <- function(xml, coords) {
-	new("SensorML", xml = xml, coords = coords)
-}
-
-#
-#
-#
-parseSensorML <- function(obj, sos, verbose = FALSE) {
-	.sml = SensorML(xml = obj, coords = data.frame())
+as.SosObservationOffering.SpatialPolygons = function(from) {
+	# create bounding polygon from offering bounding box
+	.bbox <- sosBoundedBy(from, bbox = TRUE)
+	.llat <- .bbox["coords.lat","min"]
+	.llon <- .bbox["coords.lon","min"]
+	.ulat <- .bbox["coords.lat","max"]
+	.ulon <- .bbox["coords.lon","max"]
 	
-	if(verbose) cat("Getting coordinates for ",
-				sosId(.sml), "\n")
-	.sml@coords <- sosCoordinates(obj = .sml, sos = sos, verbose = verbose)
+	# beginning at lower left corner:
+	.poly <- Polygon(cbind(c(.llon, .llon, .ulon, .ulon, .llon),
+					c(.llat, .ulat, .ulat, .llat, .llat)))
+	.spPoly <- SpatialPolygons(list(
+					Polygons(list(.poly), sosName(from))),
+			proj4string = sosGetCRS(from))
 	
-	return(.sml)
+	return(.spPoly)
 }
-
-#
-#
-#
-plot.SensorML <- function(x, y, ...) {
-	.sp <- as(x, "SpatialPointsDataFrame")
-	plot(.sp, ...)
-}
-setMethod("plot", signature(x = "SensorML", y = "missing"),
-		plot.SensorML)
-
+setAs("SosObservationOffering", "SpatialPolygons", 
+		function(from) {
+			as.SosObservationOffering.SpatialPolygons(from)
+		}
+)
+setAs("SosObservationOffering", "Spatial", 
+		function(from) {
+			as.SosObservationOffering.SpatialPolygons(from)
+		}
+)

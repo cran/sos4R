@@ -58,6 +58,16 @@
 \alias{parseFile,SOS_1.0.0,character-method}
 
 
+\alias{parseCoordinate}
+\alias{parseCoordinate-method}
+\alias{parseVector}
+\alias{parseVector-method}
+\alias{parseLocation}
+\alias{parseLocation-method}
+\alias{parseSwePosition}
+\alias{parseSwePosition-method}
+
+
 \title{Parsing Functions for XML Documents and Elements}
 
 \description{The functions decode a given XML object to an \R representation, which can be an object of a specific class, a list, a named character vector, \ldots}
@@ -74,9 +84,9 @@ parseCountObservation(obj, sos, verbose = FALSE)
 parseDataArray(obj, sos, verbose = FALSE)
 parseElementType(obj, sos, verbose = FALSE)
 parseEncoding(obj, sos, verbose = FALSE)
-parseFeatureCollection(obj)
+parseFeatureCollection(obj, sos)
 parseField(obj, sos, verbose = FALSE)
-parseFOI(obj)
+parseFOI(obj, sos)
 parseGeometryObservation(obj, sos, verbose = FALSE)
 parseMeasure(obj)
 parseMeasurement(obj, sos, verbose = FALSE)
@@ -90,14 +100,14 @@ parseOwsRange(obj)
 parseOwsServiceIdentification(obj)
 parseOwsServiceProvider(obj)
 parsePhenomenonProperty(obj, sos, verbose = FALSE)
-parsePoint(obj)
-parsePosition(obj)
+parsePoint(obj, sos)
+parsePosition(obj, sos)
 parseResult(obj, sos, verbose = FALSE)
-parseSamplingPoint(obj)
+parseSamplingPoint(obj, sos)
 parseSamplingTime(obj, format)
-parseSensorML(obj)
+parseSensorML(obj, sos, verbose = FALSE)
 parseSosCapabilities(obj, sos)
-parseSosFilter_Capabilities(obj)
+parseSosFilter_Capabilities(obj, sos)
 parseSosObservationOffering(obj, sos)
 parseTemporalObservation(obj, sos, verbose = FALSE)
 parseTextBlock(obj)

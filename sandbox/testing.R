@@ -9,7 +9,7 @@
 # info@52north.org                                                             #
 #                                                                              #
 # This program is free software; you can redistribute and/or modify it under   #
-# the terms of the GNU General Publipc License version 2 as published by the    #
+# the terms of the GNU General Publipc License version 2 as published by the   #
 # Free Software Foundation.                                                    #
 #                                                                              #
 # This program is distributed WITHOUT ANY WARRANTY; even without the implied   #
@@ -997,3 +997,101 @@ sosGetDCP(weathersos, operation = sosGetObservationName, type = "Post")
 describeSensor(weathersos, sosProcedures(weathersos)[[1]][[1]])
 getObservation(weathersos, sosOfferings(weathersos)[[1]], latest = TRUE)
 # still works
+
+################################################################################
+# plotting and coercion
+csiro <- SOS("http://wron.net.au/CSIRO_SOS/sos")
+rainfall.off.csiro <- sosOfferings(csiro)["Rain Gauges"][[1]]
+sosBoundedBy(rainfall.off.csiro, bbox = TRUE)
+sosCapabilitiesDocumentOriginal(csiro)
+# wrong coordinate order in capabilities!!
+
+
+csiro <- SOS("http://wron.net.au/CSIRO_SOS/sos", switchCoordinates = TRUE)
+rainfall.off.csiro <- sosOfferings(csiro)["Rain Gauges"][[1]]
+sosBoundedBy(rainfall.off.csiro, bbox = TRUE)
+plot(rainfall.off.csiro)
+
+poly <- as(rainfall.off.csiro, "SpatialPolygons")
+poly
+poly2 <- as(rainfall.off.bom, "SpatialPolygons")
+bbox(poly)
+map.where("world", coordinates(poly))
+
+# get the map data dir
+Sys.getenv("R_MAP_DATA_DIR")
+# check out world.N
+
+weathersos <- SOS("http://v-swe.uni-muenster.de:8080/WeatherSOS/sos")
+weathersos.offerings <- sosOfferings(weathersos)
+
+plot(weathersos.offerings[[1]])
+plot(weathersos, regions = c("Germany", "Austria"))
+plot(csiro)
+
+sosBoundedBy(weathersos.offerings[[1]])
+sosBoundedBy(weathersos.offerings[[1]], bbox = TRUE)
+as(weathersos.offerings[[1]], "SpatialPolygons")
+
+#
+# plotting sensor positions
+#
+proc1 <- sosProcedures(weathersos)[[1]][[1]]
+proc1.descr <- describeSensor(weathersos, proc1, verbose = TRUE)
+
+# weathersos
+sosId(proc1.descr)
+sosName(proc1.descr) # short name
+sosAbstract(proc1.descr) # description name
+coords <- sosCoordinates(proc1.descr, sos = weathersos, verbose = TRUE)
+coords
+attributes(coords[,1])
+attributes(coords[,3])
+
+proc.all <- sosProcedures(weathersos)[[1]]
+proc.all.descr <- lapply(proc.all, describeSensor, sos = weathersos)
+coords.all <- sosCoordinates(proc.all.descr, sos = weathersos)
+coords.all
+attributes(coords.all[,3])
+
+# try csiro, but not successful
+proc2 <- sosProcedures(csiro)[[3]][[2]]
+proc2.descr <- describeSensor(sos = csiro, procedure = proc2)
+proc2.descr@xml
+sosId(proc2.descr)
+sosName(proc2.descr)
+sosAbstract(proc2.descr)
+
+###
+# TODO continue here with plotting of sensor
+weathersos <- SOS("http://v-swe.uni-muenster.de:8080/WeatherSOS/sos")
+proc1 <- sosProcedures(weathersos)[[1]][[1]]
+proc1.descr <- describeSensor(weathersos, proc1, verbose = TRUE)
+
+# convert to spatial points data frame
+as(proc1.descr, "Spatial")
+
+.coords <- attributes(proc1.descr@coords)
+.crds <- .coords[,c("x", "y")]
+.data <- .coords[,!colnames(.coords)%in%c("x", "y")]
+.crs <- attributes(.coords)[["referenceFrame"]]
+
+SpatialPointsDataFrame(coords = .crds, data = .data, crs = .crs)
+
+summary(coords)
+
+# this works, move it to plot function...
+plot(coords, add = TRUE, pch = 19)
+text(x = coordinates(coords)[,"x"], y = coordinates(coords)[,"y"],
+		labels = row.names(coords@data), adj = c(0, 1), cex = 0.75)
+
+
+################################################################################
+# plot sensor positions -- SEE WEATHERSOS DEMO
+
+
+################################################################################
+# fixing errors in vignette...
+weathersos <- SOS(url = "http://v-swe.uni-muenster.de:8080/WeatherSOS/sos")
+
+sosFeaturesOfInterest(weathersos)[1:2]

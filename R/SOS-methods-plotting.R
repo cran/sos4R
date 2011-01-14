@@ -22,7 +22,7 @@
 # visit the Free Software Foundation web page, http://www.fsf.org.             #
 #                                                                              #
 # Author: Daniel Nuest (daniel.nuest@uni-muenster.de)                          #
-# Created: 2010-06-18                                                          #
+# Created: 2011-02-09                                                          #
 # Project: sos4R - visit the project web page, http://www.nordholmen.net/sos4r #
 #                                                                              #
 ################################################################################
@@ -30,30 +30,38 @@
 #
 #
 #
-SensorML <- function(xml, coords) {
-	new("SensorML", xml = xml, coords = coords)
+plot.SosObservationOffering <- function(x, y, ..., add = FALSE) {
+	.off.spatial <- as(x, "Spatial")
+	plot(x = .off.spatial, add = add, ...)
 }
+setMethod("plot", signature(x = "SosObservationOffering", y = "missing"),
+		plot.SosObservationOffering)
 
 #
 #
 #
-parseSensorML <- function(obj, sos, verbose = FALSE) {
-	.sml = SensorML(xml = obj, coords = data.frame())
+plot.SOS <- function(x, y, ..., border.color.pal = sosDefaultColorPalette) {
+	.offs <- sosOfferings(x)
 	
-	if(verbose) cat("Getting coordinates for ",
-				sosId(.sml), "\n")
-	.sml@coords <- sosCoordinates(obj = .sml, sos = sos, verbose = verbose)
+	.args <- list(...)
+	if(!is.null(.args[["add"]]))
+		.addGiven <- TRUE
+	else .addGiven <- FALSE
 	
-	return(.sml)
+	for (i in seq(1, length(.offs))) {
+		.off <- .offs[[i]]
+		.add <- i != 1 # do not 'add' the first time
+			
+		if(!any(is.na(border.color.pal))) {
+			.col <- border.color.pal[[(i %% length(border.color.pal)) + 1]]
+			
+			if(.addGiven) plot(x = .off, border = .col, ...)
+			else plot(x = .off, border = .col, add = .add, ...)
+		}
+		else {
+			if(.addGiven) plot(x = .off, ...)
+			else plot(x = .off, add = .add, ...)
+		}
+	}
 }
-
-#
-#
-#
-plot.SensorML <- function(x, y, ...) {
-	.sp <- as(x, "SpatialPointsDataFrame")
-	plot(.sp, ...)
-}
-setMethod("plot", signature(x = "SensorML", y = "missing"),
-		plot.SensorML)
-
+setMethod("plot", signature(x = "SOS", y = "missing"), plot.SOS)

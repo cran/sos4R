@@ -107,14 +107,28 @@
 * Removed OgcComparisonOpsOrXMLOrNULL and added type checks to validity function instead
 * Fixed error when retrieving no data as CSV
 
-2011-01-XX		Daniel Nuest	<daniel.nuest@uni-muenster.de>
+2011-01-17		Daniel Nuest	<daniel.nuest@uni-muenster.de>
 
 * Version 0.1-11
 * Changed title and citation
 * added .Rbuildignore to exclude Eclipse specific files in build
 * Maintenance release to re-trigger generation of vignette with v-swe running
 
-2010-01-XX		Daniel Nuest	<daniel.nuest@uni-muenster.de>
+2010-03-03		Daniel Nuest	<daniel.nuest@uni-muenster.de>
 
-* Version 0.1-12
-* ...
+* Version 0.1-13
+* Added sosGetCRS() for SosObservationOffering based on bounding box
+* Added plot() for SosObservationOffering
+* Added sosTitle() and sosAbstract()
+* fix in bbox creation in sosBoundedBy(... bbox = TRUE)
+* Added coordinate switching mechanism, works during parsing, required sos to be added to a bunch of parsing functions
+* Added sosId(), sosName(), sosAbstract(), and sosCoordinates(), coercion to Spatial, and plot() for class SensorML
+* Added sosChanges()
+* Work on demo for South Esk Test Bed, southesk
+* Work on demo for EEA AirQuality data, airquality
+* Overhaul of all demos with plotting
+* Added summary functions for SOS, SosObservationOffering
+* Added coercion functions from OmMeasurement, OmObservation and OmObservationCollection to SpatialPointsDataFrame
+* Starting demo austria, consequently some fixing in parsing of capabilities (making mandatory elements optional in parsing to avoid errors)
+* Fixed printing bug for class SOS when capabilities are only partly requested
+* Updates in Vignette for new features

@@ -1,6 +1,7 @@
 pkgname <- "sos4R"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
+options(pager = "console")
 library('sos4R')
 
 assign(".oldSearch", search(), pos = 'CheckExEnv')
@@ -114,9 +115,9 @@ flush(stderr()); flush(stdout())
 ###   sosDefaultTemporalOperator sosDefaultTimeFormat
 ###   sosDefaultFilenameTimeFormat sosDefaultColumnNameFeatureIdentifier
 ###   sosDefaultColumnNameLat sosDefaultColumnNameLon
-###   sosDefaultColumnNameSRS SosParsingFunctions SosEncodingFunctions
-###   SosDisabledParsers SosDataFieldConvertingFunctions SosExampleServices
-###   SosDefaults
+###   sosDefaultColumnNameSRS sosDefaultColorPalette SosParsingFunctions
+###   SosEncodingFunctions SosDisabledParsers
+###   SosDataFieldConvertingFunctions SosExampleServices SosDefaults
 ### Keywords: misc
 
 ### ** Examples
@@ -634,8 +635,9 @@ flush(stderr()); flush(stdout())
 ### Aliases: SensorML-class show,SensorML-method print,SensorML-method
 ###   toString,SensorML-method SensorML sml sosId,SensorML-method
 ###   sosName,SensorML-method sosAbstract,SensorML-method
-###   sosCoordinates,SensorML-method as.SensorML.SpatialPointsDataFrame
-###   plot.SensorML
+###   sosCoordinates,SensorML-method sosBoundedBy,SensorML-method
+###   sosGetCRS,SensorML-method as.SensorML.SpatialPointsDataFrame
+###   plot.SensorML plot,SensorML,missing-method
 ### Keywords: classes
 
 ### ** Examples
@@ -726,7 +728,7 @@ flush(stderr()); flush(stdout())
 ###   plot,SosObservationOffering,missing-method
 ###   as.SosObservationOffering.SpatialPolygons print.summary.SOS
 ###   print.summary.SosObservationOffering summary.SosObservationOffering
-###   summary.SOS sosChanges
+###   summary.SOS sosChanges sosResult,data.frame-method
 ### Keywords: classes
 
 ### ** Examples

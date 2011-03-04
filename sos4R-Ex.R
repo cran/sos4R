@@ -1,6 +1,7 @@
 pkgname <- "sos4R"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
+options(pager = "console")
 library('sos4R')
 
 assign(".oldSearch", search(), pos = 'CheckExEnv')
@@ -82,7 +83,7 @@ flush(stderr()); flush(stdout())
 ###   sosDescribeObservationTypeName sosDescribeResultModelName
 ###   sosGetFeatureOfInterestTimeName sosGetResultName
 ###   sosInsertObservationName sosRegisterSensorName mimeTypeCSV mimeTypeOM
-###   mimeTypeSML mimeTypeXML smlSensorMLName
+###   mimeTypeSML mimeTypeXML smlSensorMLName sosAttributeFileName
 ### Keywords: constants XML
 
 ### ** Examples
@@ -376,6 +377,23 @@ print(observationByIdRequest)
 
 
 cleanEx()
+nameEx("KML")
+### * KML
+
+flush(stderr()); flush(stdout())
+
+### Name: KML
+### Title: Methods for the Namespace kml
+### Aliases: parseKML mimeTypeKML kmlName kml
+### Keywords: methods misc
+
+### ** Examples
+
+#
+
+
+
+cleanEx()
 nameEx("OGC")
 ### * OGC
 
@@ -609,7 +627,7 @@ nameEx("SA")
 
 flush(stderr()); flush(stdout())
 
-### Name: SaSamplingPoint-class
+### Name: SA
 ### Title: Classes of the Namespace sa
 ### Aliases: sa 'sampling features' SaSamplingPoint SaSamplingPoint-class
 ###   show,SaSamplingPoint-method SaSamplingSurface SaSamplingSurface-class
@@ -636,7 +654,7 @@ nameEx("SML")
 
 flush(stderr()); flush(stdout())
 
-### Name: SensorML-class
+### Name: SML
 ### Title: Classes of the Namespace sml
 ### Aliases: SensorML-class show,SensorML-method print,SensorML-method
 ###   toString,SensorML-method SensorML sml sosId,SensorML-method
@@ -668,7 +686,7 @@ nameEx("SOS")
 
 flush(stderr()); flush(stdout())
 
-### Name: SOS-class
+### Name: SOS
 ### Title: Class, and Construction and Accessor Functions for "SOS"
 ### Aliases: SOS SOS-class show,SOS-method print,SOS-method
 ###   toString,SOS-method SOS_1.0.0 SOS_1.0.0-class show,SOS_1.0.0-method
@@ -772,7 +790,7 @@ nameEx("SWE")
 
 flush(stderr()); flush(stdout())
 
-### Name: SweCompositePhenomenon-class
+### Name: SWE
 ### Title: Classes and Construction Functions for the SWE Namespace
 ### Aliases: SweCompositePhenomenon-class
 ###   show,SweCompositePhenomenon-method SwePhenomenon-class
@@ -874,7 +892,7 @@ nameEx("SosEventTime")
 
 flush(stderr()); flush(stdout())
 
-### Name: SosEventTime-class
+### Name: SosEventTime
 ### Title: Classes and Construction Functions for sos:eventTime elements.
 ### Aliases: SosEventTime-class SosEventTimeLatest-class
 ###   show,SosEventTime-method print,SosEventTime-method

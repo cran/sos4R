@@ -298,7 +298,14 @@ SosGetObservationById <- function(
 	
 	if(length(.response) > 0 & 
 			regexpr("(<html>|<HTML>|<!DOCTYPE HTML)", .response) > 0) {
-		stop(paste("ERROR: Got HTML response!:\n", .response, "\n\n"))
+		if(verbose) cat("[.sosRequest_1.0.0] Got HTML, probably an error.\n")
+		
+		# might still be KML with embedded HTML!
+		if(regexpr("(http://www.opengis.net/kml/)", .response) > 0) {
+			if(verbose) cat("[.sosRequest_1.0.0] Got KML! Can continue...\n")
+		}
+		else stop(paste("[sos4R] ERROR: Got HTML response!:\n", .response,
+							"\n\n"))
 	}
 	
 	return(.response)
@@ -395,6 +402,7 @@ setMethod(f = "getCapabilities", signature = signature(sos = "SOS_1.0.0"),
 		print(.response)
 	}
 	
+	.filename <- NULL
 	if(!is.null(saveOriginal)) {
 		if(is.character(saveOriginal)) {
 			.filename <- paste(saveOriginal, ".xml", sep = "")
@@ -423,6 +431,17 @@ setMethod(f = "getCapabilities", signature = signature(sos = "SOS_1.0.0"),
 	else {
 		.parsingFunction <- sosParsers(sos)[[sosDescribeSensorName]]
 		.sml <- .parsingFunction(obj = .response, sos = sos, verbose = verbose)
+		
+		if(!is.null(.filename)) {
+			.oldAttrs <- attributes(.sml)
+			.newAttrs <- list(.filename)
+			names(.newAttrs) <- list(sosAttributeFileName)
+			if(verbose) cat("[.describeSensor_1.0.0] Appending new attributes",
+						toString(.newAttrs), "(names",
+						toString(names(.newAttrs)), ")\n")
+			
+			attributes(.sml) <- c(.oldAttrs, .newAttrs)
+		}
 		
 		return(.sml)
 	}
@@ -457,7 +476,7 @@ setMethod(f = "getObservationById",
 .getObservationById_1.0.0 <- function(sos, observationId, responseFormat, srsName,
 		resultModel, responseMode, verbose, inspect, saveOriginal) {
 	if(verbose) {
-		cat("[getObservationById] ID", observationId, "\n")
+		cat("[.getObservationById_1.0.0] ID", observationId, "\n")
 	}
 	
 	.filename <- NULL
@@ -479,17 +498,17 @@ setMethod(f = "getObservationById",
 			resultModel = resultModel, responseMode = responseMode)
 	
 	if(verbose)
-		cat("[getObservationById] REQUEST:\n", toString(.go), "\n")
+		cat("[.getObservationById_1.0.0] REQUEST:\n", toString(.go), "\n")
 	
 	.responseString = sosRequest(sos = sos, request = .go,
 			verbose = verbose, inspect = inspect)
 	if(verbose || inspect){
-		cat("[getObservationById] RESPONSE:\n", .responseString , "\n")
+		cat("[.getObservationById_1.0.0] RESPONSE:\n", .responseString , "\n")
 	}
 	
 	.response <- xmlParseDoc(.responseString, asText = TRUE)
 	if(verbose || inspect) {
-		cat("[getObservationById] RESPONSE DOC:\n")
+		cat("[.getObservationById_1.0.0] RESPONSE DOC:\n")
 		print(.response)
 	}
 	
@@ -512,16 +531,26 @@ setMethod(f = "getObservationById",
 			.obs <- .obs[[1]]
 		
 		if(verbose) {
-			cat("[getObservationById] PARSED RESPONSE:\n")
+			cat("[.getObservationById_1.0.0] PARSED RESPONSE:\n")
 			print(.obs)
+		}
+		
+		if(!is.null(.filename)) {
+			.oldAttrs <- attributes(.obs)
+			.newAttrs <- list(.filename)
+			names(.newAttrs) <- list(sosAttributeFileName)
+			if(verbose) cat("[.getObservationById_1.0.0] Appending new attributes",
+						toString(.newAttrs), "(names",
+						toString(names(.newAttrs)), ")\n")
+			
+			attributes(.obs) <- c(.oldAttrs, .newAttrs)
 		}
 		
 		return(.obs)
 	}
 	
-	if(!is.null(.filename)) {
-		save(.responseString, file = .filename)
-		cat("[sos4R] Original document saved:", .filename, "\n")
+	if(verbose) {
+		cat("[.getObservationById_1.0.0] returning raw response string.\n")
 	}
 	
 	return(.responseString)
@@ -581,17 +610,42 @@ setMethod(f = "getObservationById",
 	.contentType <- NA_character_
 	.contentType <- attributes(.responseString)[["Content-Type"]]
 	
-	if(isXMLString(.responseString) || .contentType == mimeTypeXML) {
+	if(verbose) cat("[.getObservation_1.0.0] Content-Type:", .contentType, "\n")
+	
+	if(isXMLString(.responseString)) {
 		if(verbose) cat("[.getObservation_1.0.0] Got XML string as response.\n")
 		
+		if(length(.contentType) < 1) {
+			if(verbose) cat("[.getObservation_1.0.0] No content type!",
+						"Falling back to '", mimeTypeXML, "'\n")
+			.contentType <- mimeTypeXML
+		}
+
 		.response <- xmlParseDoc(.responseString, asText = TRUE)
 		if(verbose || inspect) {
 			cat("[.getObservation_1.0.0] RESPONSE DOC:\n")
 			print(.response)
 		}
 		
+		# select the parser and file ending based on the mime type FIRST
+		.fileEnding <- ".xml"
+		if(.contentType == mimeTypeXML) {
+			if(verbose) cat("[.getObservation_1.0.0] Got pure XML according to mime type.\n")
+			.parserName <- mimeTypeXML
+		}
+		else if (.contentType == mimeTypeKML) {
+			if(verbose) cat("[.getObservation_1.0.0] Got KML according to mime type.\n")
+			
+			.fileEnding <- ".kml"
+			.parserName <- mimeTypeKML
+		}
+		else {
+			# fall back, or more of a default: the function name
+			.parserName <- sosGetObservationName
+		}
+		
 		if(!is.null(.filename)) {
-			.filename <- paste(.filename, ".xml", sep = "")
+			.filename <- paste(.filename, .fileEnding, sep = "")
 			saveXML(.response, file = .filename)
 			
 			if(verbose) {
@@ -605,10 +659,17 @@ setMethod(f = "getObservationById",
 		}
 		
 		if( !is.na(responseFormat) && 
-				grep(pattern = "text/xml", x = responseFormat) != 1)
+				isTRUE(grep(pattern = "text/xml", x = responseFormat) != 1)) {
 			warning("Got XML string, but request did not require text/xml (or subtype).")
+		}
 		
-		.parsingFunction <- sosParsers(sos)[[sosGetObservationName]]
+		.parsingFunction <- sosParsers(sos)[[.parserName]]
+		
+		if(verbose) {
+			cat("[.getObservation_1.0.0] Parsing with function ")
+			print(.parsingFunction)
+		}
+		
 		.obs <- .parsingFunction(obj = .response, sos = sos,
 				verbose = verbose)
 		
@@ -622,13 +683,13 @@ setMethod(f = "getObservationById",
 		else .resultLength <- NA
 		
 		if(verbose) {
-			cat("[.getObservation_1.0.0] PARSED RESPONSE:\n",
-					toString(.obs), "\n")
+			cat("[.getObservation_1.0.0] PARSED RESPONSE:",
+					class(.obs), "\n")
 			cat("[.getObservation_1.0.0] Result length(s): ",
 					toString(.resultLength), "\n")
 		}
 		
-		if(any(sapply(.obs, is.null))) {
+		if(is.list(.obs) && any(sapply(.obs, is.null))) {
 			.countInfo <- paste("NO DATA, turn on 'verbose' for more information.")
 		}
 		else {
@@ -639,14 +700,25 @@ setMethod(f = "getObservationById",
 		.msg <- paste("[sos4R] Finished getObservation to", sos@url,
 				"\n\t--> received", length(.obs), "observation(s) having",
 				.countInfo , "\n")
-		if(!is.null(.filename)) .msg <- paste(.msg,
+		if(!is.null(.filename)) {
+			.msg <- paste(.msg,
 					"[sos4R] Original document saved:", .filename, "\n")
+			
+			.oldAttrs <- attributes(.obs)
+			.newAttrs <- list(.filename)
+			names(.newAttrs) <- list(sosAttributeFileName)
+			if(verbose) cat("[.getObservationById_1.0.0] Appending new attributes",
+						toString(.newAttrs), "(names",
+						toString(names(.newAttrs)), ")\n")
+			
+			attributes(.obs) <- c(.oldAttrs, .newAttrs)
+		}
 		cat(.msg)
 		
 		# RETURN ###
 		return(.obs)
 	}
-	else {
+	else { # response is NOT an XML string:
 		if(verbose)
 			cat("[.getObservation_1.0.0] Did NOT get XML string as response, trying to parse with",
 					responseFormat, "\n")
@@ -668,8 +740,19 @@ setMethod(f = "getObservationById",
 			.msg <- paste("[sos4R] Finished getObservation to", sos@url, "\n\t",
 					"--> received observations with dimensions", 
 					toString(dim(.csv)), "\n")
-			if(!is.null(.filename)) .msg <- paste(.msg,
+			if(!is.null(.filename)) {
+				.msg <- paste(.msg,
 						"[sos4R] Original document saved:", .filename, "\n")
+				
+				.oldAttrs <- attributes(.csv)
+				.newAttrs <- list(.filename)
+				names(.newAttrs) <- list(sosAttributeFileName)
+				if(verbose) cat("[.getObservation_1.0.0] Appending new attributes",
+							toString(.newAttrs), "(names",
+							toString(names(.newAttrs)), ")\n")
+				
+				attributes(.csv) <- c(.oldAttrs, .newAttrs)
+			}
 			cat(.msg)
 		
 			# RETURN ###

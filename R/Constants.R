@@ -74,11 +74,13 @@ mimeTypeCSV <- "text/csv"
 mimeTypeXML <- "text/xml"
 mimeTypeOM <- "text/xml;subtype=&quot;om/1.0.0&quot;"
 mimeTypeSML <- "text/xml;subtype=&quot;sensorML/1.0.1&quot;"
+mimeTypeKML <- "application/vnd.google-earth.kml+xml"
 
 .sosSupportedResponseFormats <- c(
 		mimeTypeOM,
 		mimeTypeSML,
-		mimeTypeCSV)
+		mimeTypeCSV,
+		mimeTypeKML)
 SosSupportedResponseFormats <- function() {
 	return(.sosSupportedResponseFormats)
 }
@@ -356,6 +358,9 @@ owsProviderNameName <- "ProviderName"
 owsProviderSiteName <- "ProviderSite"
 owsServiceContactName <- "ServiceContact"
 
+kmlName <- "kml"
+
+################################################################################
 owsNamespacePrefix <- "ows"
 .owsNamespace <- c(ows = "http://www.opengis.net/ows/1.1")
 .owsCodes = c(
@@ -403,3 +408,4 @@ xmlInternalDocumentName <- "XMLInternalDocument"
 xmlTextNodeName <- "text"
 
 .sosCheatSheetDocumentName <- "sos4r_cheat-sheet.pdf"
+sosAttributeFileName <- "savedAsFile"

@@ -1,8 +1,9 @@
-# Copyright (C) 2010 by 52 North Initiative for Geospatial Open Source Software GmbH, Contact: info@52north.org
+# Copyright (C) 2011 by 52 North Initiative for Geospatial Open Source Software GmbH, Contact: info@52north.org
 # This program is free software; you can redistribute and/or modify it under the terms of the GNU General Public License version 2 as published by the Free Software Foundation. This program is distributed WITHOUT ANY WARRANTY; even without the implied WARRANTY OF MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program (see gpl-2.0.txt). If not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or visit the Free Software Foundation web page, http://www.fsf.org.
 # Author: Daniel Nuest (daniel.nuest@uni-muenster.de)
 # Project: sos4R - visit the project web page, http://www.nordholmen.net/sos4r
 library("sos4R")
+
 
 ################################################################################
 # IOOS/NDBC
@@ -18,6 +19,7 @@ ioos <- SOS(url = "http://sdf.ndbc.noaa.gov/sos/server.php",
 		timeFormat = "%Y-%m-%dT%H:%M:%SZ")
 ioos.off <- sosOfferings(ioos)
 names(ioos.off)
+sosResponseFormats(ioos)
 
 #############
 # first test:
@@ -36,8 +38,8 @@ world <- pruneMap(map(database = "world", plot = FALSE))
 world.lines <- map2SpatialLines(world, proj4string = crs)
 
 plot(world.lines, col = "grey50")
-plot(ioos.get, lwd = 3, add = TRUE)
-title(main = sosTitle(ioos.get))
+plot(ioos, lwd = 3, add = TRUE)
+title(main = sosTitle(ioos))
 #text(x = off.coords[,1], y = off.coords[,1], col = "black",
 #		labels = off.names, adj = c(1, 0), cex = 0.75)
 
@@ -91,18 +93,20 @@ summary(obs.wmo52.all)
 dim(obs.wmo52.all)
 
 hist(obs.wmo52.all[["sea_water_temperature (C)"]])
-
 colnames(obs.wmo52.all)
 
-# TODO continue here, coordinates seem wrong and there are NA values in the 
+# coordinates seem wrong and there are NA values in the 
 # data.frame, must be removed
+obs.wmo52.all <- obs.wmo52.all[complete.cases(obs.wmo52.all),]
 
-subset(obs.wmo52.all, is.na(latitude (degree)))
-
-.spdf <- SpatialPointsDataFrame(
+spdf <- SpatialPointsDataFrame(
 		coords = obs.wmo52.all[c(4,3)],
 		data = obs.wmo52.all[-c(4,3)],
 		proj4string = crs)
+summary(spdf)
+
+plot(world.lines, col = "grey50")
+plot(spdf, add = TRUE)
 
 
 ################################################################################
@@ -111,6 +115,7 @@ obs.csv <- getObservation(ioos, offering = sosName(ioos.off[[100]]),
 		responseFormat = "text/csv",
 		observedProperty = sosObservedProperties(ioos.off[[100]])[2])
 obs.csv
+summary(obs.csv)
 
 
 ################################################################################
@@ -145,6 +150,19 @@ obs.001 <- getObservation(sos = ioos,
 		inspect = TRUE, verbose = TRUE)
 
 
+################################################################################
+# KML
+kml <- getObservation(ioos, offering = "urn:ioos:network:noaa.nws.ndbc:all",
+#		verbose = TRUE,
+#		saveOriginal = TRUE,
+		responseFormat = "application/vnd.google-earth.kml+xml",
+		observedProperty = list(
+				"http://mmisw.org/ont/cf/parameter/air_temperature"))
+kml
+
+# TODO do sth. with the KML, e.g. export using examples from Spatial-Analyst?
+
+
 
 
 ################################################################################
@@ -159,6 +177,7 @@ ioos.get <- SOS(url = "http://sdf.ndbc.noaa.gov/sos/server.php",
 # https://geossregistries.info/geosspub/component_details_ns.jsp?compId=urn:uuid:c1af67f9-4a1b-42d2-b352-e2fdb3bcdeb1
 # request examples at http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/
 # Also good information about existing/active stations!
+# Presentation: http://sdf.ndbc.noaa.gov/sos/IOOS_DIF_SOS_Project.ppt
 ioosdif <- SOS(url = "http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS")
 #		method = "GET",
 #		verboseOutput = TRUE)
@@ -168,11 +187,10 @@ sosName(ioosdif.off)
 length(ioosdif.off)
 # 771
 
-# check out ioosdif at some point?
+# 
 sosResponseFormats(ioosdif)
 
-# TODO write parser for KML results, return kml as is and export using
-# examples from Spatial-Analyst?
 
-
-cat("Demo finished, try another one!\n")
+###################################
+# Demo finished, try another one! #
+###################################

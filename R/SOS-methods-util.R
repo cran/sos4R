@@ -28,14 +28,11 @@
 ################################################################################
 
 ################################################################################
-# TODO read data function
-# 
-# convenience function using non-SWE names for stuff
+# read function, a convenience function using non-SWE names for stuff
 #
 # parameters:
 #		sos:
 #				the sos to query
-#		
 # 		time = c():	
 #				either one time as POSIXt (or character which is tried to be
 #				parsed to POSIXt) and forms a time instant, or two times
@@ -60,7 +57,7 @@ read.sos <- function(sos,
 		sensors = NA_character_,
 		phenomena = NA_character_,
 		bbox = NA_character_, # one, or several?
-		times = c(NA), # one, or several?
+		times = NA_character_, # one, or several?
 		mergeResult = FALSE,
 		addLocation = FALSE,
 		verbose = FALSE) {
@@ -68,85 +65,30 @@ read.sos <- function(sos,
 }
 
 
-#
-# convenience info function using non-SWE names for stuff
-#
-info.sos <- function(sos,
-		# select the info to return, if > 1 as named list
-		phenomena = TRUE,
-		bbox = TRUE,
-		timePeriod = TRUE,
-		# 
-		locations = FALSE,
-		all = FALSE,
-		sensors = FALSE,
-		offerings = FALSE,
-		features = FALSE,
-		metadata = FALSE,
-		operations = FALSE,
-		UOMs = FALSE,
-		# select "filters", only one at a time and
-		sensor = NA_character_,
-		phenomenon = NA_character_,
-		offering = NA_character_,
-		# data is an index of the list of the info.data operation
-		series = NA_integer_) {
-	#standardGeneric("info.sos")
-	warning("Method is not implemented yet!")
-}
-
-
-#
-# sensors = procedure
-# phenomena = observedProperty
-# metadata: url, method, version, identification, provider, timeFormat
-# offerings: shortly the name, the bounding box, the time period - DEFAULT!
-# operations: just the names and how to get more info
-
-#
 # method creates a list (whose items can are named and can be used to read data,
 # or just used in function read.sos)
 # for all available and valid combinations of off/foi/phen/proc
 #
-info.series <- function(sos) {
-	warning("Method is not implemented yet!")
-}
+#sosTimeSeries <- function(sos) {
+#	warning("Method is not implemented yet!")
+#}
+
 
 #
-# method returns information about sensors (procedures) matching the given
-# criteria
+# get all the matching ungiven parameters for that are available for a set of 
+# parameters that are given, e.g. all offerings that offer observed property
+# "A" for feature of interest "X", or all procedures measuring an observed
+# property "B".
 #
-info.sensors <- function(sos,
-		phenomena = c(NA_character_),
-		offerings = c(NA_character_),
-		UOMs = c(NA_character_)) {
-	warning("Method is not implemented yet!")
-}
-
-#
-#
-#
-info.phenomena <- function(sos) {
-	warning("Method is not implemented yet!")
-}
-
-#
-#
-#
-info.features <- function(sos) {
-	warning("Method is not implemented yet!")
-}
-
-#
-#
-#
-info.offerings <- function(sos) {
-	warning("Method is not implemented yet!")
-}
+#sosMatching <- function(offering = NA, procedure = NA, observedProperty = NA,
+#		foi = NA) {
+#	warning("Method is not implemented yet!")
+#}
 
 
 ################################################################################
-# conversion methods and accessor function
+# conversion methods
+#
 sosConvertTime <- function(x, sos) {
 	.t <- as.POSIXct(strptime(x = x, format = sosTimeFormat(sos = sos)))
 	return(.t)
@@ -164,14 +106,7 @@ sosConvertLogical <- function(x, sos) {
 
 ################################################################################
 # convenience functions
-if (!isGeneric("sosCreateTimeInstant"))
-	setGeneric(name = "sosCreateTimeInstant", def = function(sos, time,
-					frame = as.character(NA),
-					calendarEraName = as.character(NA),
-					indeterminatePosition = as.character(NA)) {
-				standardGeneric("sosCreateTimeInstant")
-			}
-	)
+#
 setMethod(f = "sosCreateTimeInstant",
 		signature = signature(sos = "SOS", time = "POSIXt"),
 		def = function(sos, time, frame, calendarEraName,
@@ -187,16 +122,9 @@ setMethod(f = "sosCreateTimeInstant",
 		}
 )
 
-if (!isGeneric("sosCreateTimePeriod"))
-	setGeneric(name = "sosCreateTimePeriod",
-			def = function(sos, begin, end, frame = as.character(NA),
-					calendarEraName = as.character(NA),
-					indeterminatePosition = as.character(NA),
-					duration = as.character(NA),
-					timeInterval = NULL) {
-				standardGeneric("sosCreateTimePeriod")
-			}
-	)
+#
+#
+#
 setMethod(f = "sosCreateTimePeriod",
 		signature = signature(sos = "SOS", begin = "POSIXt", end = "POSIXt"),
 		def = function(sos, begin, end, frame, calendarEraName,
@@ -224,11 +152,6 @@ setMethod(f = "sosCreateTimePeriod",
 #
 #
 #
-if (!isGeneric("sosCreateEventTimeList"))
-	setGeneric(name = "sosCreateEventTimeList",
-			def = function(time, operator = sosDefaultTemporalOperator) {
-				standardGeneric("sosCreateEventTimeList")
-			})
 setMethod(f = "sosCreateEventTimeList",
 		signature = signature(time = "GmlTimeGeometricPrimitive"),
 		def = function(time, operator) {
@@ -236,11 +159,78 @@ setMethod(f = "sosCreateEventTimeList",
 			return(.et)
 		}
 )
-if (!isGeneric("sosCreateEventTime"))
-	setGeneric(name = "sosCreateEventTime",
-			def = function(time, operator = sosDefaultTemporalOperator) {
-				standardGeneric("sosCreateEventTime")
-			})
+
+#
+#
+#
+setMethod(f = "sosCreateTime",
+		signature = signature(sos = "SOS", time = "character"),
+		def = function(sos, time, operator) {
+			if(regexpr(pattern = "::", text = time) > -1) {
+				.l <- .sosCreateEventTimeListFromPeriod(sos = sos, time = time,
+						operator = operator, seperator = "::")
+			}
+			else if(regexpr(pattern = "P", text = time) > -1) {
+				.l <- .sosCreateEventTimeListFromISOPeriod(sos = sos, 
+						time = time, operator = operator)
+			}
+			else if(regexpr(pattern = "/", text = time) > -1) {
+				.l <- .sosCreateEventTimeListFromPeriod(sos = sos, time = time,
+						operator = operator, seperator = "/")
+			}
+
+			return(.l)
+		}
+)
+
+.sosCreateEventTimeListFromPeriod <- function(sos, time, operator, seperator) {
+	.times <- strsplit(x = time, split = seperator)[[1]]
+	.start <- .times[[1]]
+	if(length(.times) > 1)
+		.end <- .times[[2]]
+	else .end <- NULL
+	
+#	print(.start); print(.end);	print(nchar(.start)); print(nchar(.end));
+#	str(.start); print(.end); 
+	
+	if(is.null(.end)) {
+		# no end time:
+		.ti <- sosCreateTimeInstant(sos = sos, time = as.POSIXct(.start))
+		.l <- sosCreateEventTimeList(time = .ti,
+				operator = SosSupportedTemporalOperators()[[ogcTempOpTMAfterName]])
+	}
+	else if(nchar(.start) > 0) {
+		.tp <- sosCreateTimePeriod(sos = sos, begin = as.POSIXct(.start),
+				end = as.POSIXct(.end))
+		.l <- sosCreateEventTimeList(.tp)
+	}
+	else if(nchar(.start) < 1) {
+		# no start time:
+		.ti <- sosCreateTimeInstant(sos = sos, time = as.POSIXct(.end))
+		.l <- sosCreateEventTimeList(time = .ti,
+				operator = SosSupportedTemporalOperators()[[ogcTempOpTMBeforeName]])
+	}
+	
+	return(.l)
+}
+
+.sosCreateEventTimeListFromISOPeriod <- function(sos, time, operator) {
+#	* 2005-08-09T18:31:42P3Y6M4DT12H30M17S: bestimmt eine Zeitspanne von 3 Jahren, 6 Monaten, 4 Tagen 12 Stunden, 30 Minuten und 17 Sekunden ab dem 9. August 2005 „kurz nach halb sieben Abends“.
+#	* P1D: „Bis morgen zur jetzigen Uhrzeit.“ Es könnte auch „PT24H“ verwendet werden, doch erstens wären es zwei Zeichen mehr, und zweitens würde es bei der Zeitumstellung nicht mehr zutreffen.
+#	* P0003-06-04T12:30:17
+#	* P3Y6M4DT12H30M17S: gleichbedeutend mit dem ersten Beispiel, allerdings ohne ein bestimmtes Startdatum zu definieren
+#	* PT72H: „Bis in 72 Stunden ab jetzt.“
+#	* 2005-08-09P14W: „Die 14 Wochen nach dem 9. August 2005.“
+#	* 2005-08-09/2005-08-30
+#	* 2005-08-09--30
+#	* 2005-08-09/30: „Vom 9. bis 30. August 2005.“
+	
+	warning("Function .sosCreateEventTimeListFromISOPeriod not implemented yet!")
+}
+
+#
+#
+#
 setMethod(f = "sosCreateEventTime",
 		signature = signature(time = "GmlTimeGeometricPrimitive"),
 		def = function(time, operator) {
@@ -271,12 +261,6 @@ setMethod(f = "sosCreateEventTime",
 #
 #
 #
-if (!isGeneric("sosCreateFeatureOfInterest"))
-	setGeneric(name = "sosCreateFeatureOfInterest",
-			def = function(objectIDs = list(NA), spatialOps = NULL, bbox = NULL,
-					srsName = NA_character_) {
-				standardGeneric("sosCreateFeatureOfInterest")
-			})
 setMethod(f = "sosCreateFeatureOfInterest",
 		signature = signature(),
 		def = function(objectIDs, spatialOps, bbox, srsName) {
@@ -313,14 +297,6 @@ setMethod(f = "sosCreateFeatureOfInterest",
 #
 #
 #
-if (!isGeneric("sosCreateBBOX"))
-	setGeneric(name = "sosCreateBBOX",
-			def = function(lowLat, lowLon, uppLat, uppLon, srsName,
-					srsDimension = NA_integer_, axisLabels = NA_character_,
-					uomLabels = NA_character_,
-					propertyName = sosDefaultSpatialOpPropertyName) {
-				standardGeneric("sosCreateBBOX")
-			})
 setMethod(f = "sosCreateBBOX",
 		signature = signature(lowLat = "numeric", lowLon = "numeric",
 				uppLat = "numeric", uppLon = "numeric"),
@@ -344,11 +320,6 @@ setMethod(f = "sosCreateBBOX",
 #
 #
 #
-if (!isGeneric("sosCreateBBoxMatrix"))
-	setGeneric(name = "sosCreateBBoxMatrix",
-			def = function(lowLat, lowLon, uppLat, uppLon) {
-				standardGeneric("sosCreateBBoxMatrix")
-			})
 setMethod(f = "sosCreateBBoxMatrix",
 		signature = signature(lowLat = "numeric", lowLon = "numeric",
 				uppLat = "numeric", uppLon = "numeric"),
@@ -368,10 +339,6 @@ setMethod(f = "sosCreateBBoxMatrix",
 #
 #
 #
-if (!isGeneric("sosCapabilitiesDocumentOriginal"))
-	setGeneric(name = "sosCapabilitiesDocumentOriginal", def = function(sos) {
-				standardGeneric("sosCapabilitiesDocumentOriginal")
-			})
 setMethod(f = "sosCapabilitiesDocumentOriginal",
 		signature = signature(sos = "SOS"),
 		def = function(sos) {
@@ -484,23 +451,25 @@ setMethod(f = "sosExceptionCodeMeaning",
 setMethod(f = "sosGetCRS",
 		signature = c(obj = "character"),
 		def = function(obj) {
-			if(!require(rgdal, quietly = TRUE))
-				print("rgdal not present: CRS values will not be converted correctly")
-			
-			# get the position of EPSG
+			# get the position of EPSG code
 			.split <- strsplit(as.character(obj), split = ":")
 			.idx <- which(toupper(.split[[1]]) == "EPSG")
 			if(length(.idx) == 0) {
-				# possibly versioned, try one index higher
-				
-				
+				# possibly versioned, try one index higher?
 				warning(paste("Could not create CRS from the given object:", obj))
 				return(NULL)
 			}
 			.epsg <- .split[[1]][[length(.split[[1]])]]
 			
 			.initString <- paste("+init=epsg", .epsg, sep = ":")
+			
+			.rgdal <- require("rgdal", quietly = TRUE)
+			if(!.rgdal) {
+				# if(!("rgdal" %in% .packages())) does only check loaded pkgs
+				warning("rgdal not present: CRS values will not be validated.")
+			}
 			.crs <- CRS(.initString)
+			
 			return(.crs)
 		}
 )
@@ -566,6 +535,7 @@ setMethod(f = "sosGetCRS",
 }
 
 
+################################################################################
 #
 # ‘"’, ‘*’, ‘:’, ‘/’, ‘<’, ‘>’, ‘?’, ‘\’, and ‘|’
 #
@@ -577,24 +547,26 @@ setMethod(f = "sosGetCRS",
 	return(.clean)
 }
 
-#
-#
-#
-setMethod(f = "sosGetDCP",
-		signature = c(sos = "SOS", operation = "character"),
-		def = function(sos, operation, type = NA) {
-			.ops <- sosOperations(sos)
-			
-			if(is.null(.ops)) return(NULL)
-			
-			.dcps <- .ops[[operation]]@DCPs
-			
-			if(!is.na(type)) {
-				return(.dcps[[type]])
-			}
-			else return(.dcps)
-		}
-)
+.illegalColumnNameCharacters <- list("\\[", "\\]", "@", "\\$", "~",
+		"\\+", "-", "\\*")
+.illegalColumnNameEscapeCharacter <- "."
+
+.cleanupColumnName <- function(name) {
+	# replace illegal characters
+	.name <- name
+	
+	for (.x in .illegalColumnNameCharacters) {
+		# replace multiple escape characters with one
+		.name <- gsub(pattern = .x,
+				replacement = .illegalColumnNameEscapeCharacter,
+				x = .name)
+	}
+	
+	.name <- gsub(pattern = paste("(\\",
+					.illegalColumnNameEscapeCharacter, ")+", sep = ""),
+			replacement = .illegalColumnNameEscapeCharacter, x = .name)
+	return(.name)
+}
 
 
 ################################################################################

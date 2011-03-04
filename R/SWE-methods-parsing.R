@@ -172,9 +172,9 @@ parseValues <- function(values, fields, encoding, sos, verbose = FALSE) {
 		if(verbose) cat("[parseValues] Added attributes to new data:",
 					toString(.addAttrs),
 					"[ names: ", toString(names(.addAttrs)), "]",
-					"\nOld attributes list is",
+					"\n[parseValues] Old attributes list is",
 					toString(.oldAttrs),
-					"\nNew attributes list is",
+					"\n[parseValues] New attributes list is",
 					toString(attributes(.data[,.lastColumn])),
 					"\n")
 	}
@@ -183,6 +183,7 @@ parseValues <- function(values, fields, encoding, sos, verbose = FALSE) {
 	if(verbose) cat("[parseValues] Removing temporary first column\n")
 	.data <- .data[,!colnames(.data)%in%.tempId]
 	
+	if(verbose) cat("[parseValues] returning!\n")
 	return(.data)
 }
 
@@ -352,7 +353,8 @@ parsePhenomenonProperty <- function(obj, sos, verbose = FALSE) {
 	# check if reference or inline phenomenon
 	.href <- xmlGetAttr(node = obj, name = "href")
 	if(!is.null(.href)) {
-		if(verbose) cat("[parsePhenomenonProperty] with reference", .href)
+		if(verbose) cat("[parsePhenomenonProperty] with reference", .href,
+					"\n")
 		
 		.obsProp <- SwePhenomenonProperty(href = .href)
 	}
@@ -362,7 +364,8 @@ parsePhenomenonProperty <- function(obj, sos, verbose = FALSE) {
 		.compPhen <- .noneText[[1]]
 		# 52N SOS only returns swe:CompositePhenomenon
 		.name <- xmlName(.compPhen)
-		if(verbose) cat("[parsePhenomenonProperty] inline with name ", .name)
+		if(verbose) cat("[parsePhenomenonProperty] inline with name", .name,
+					"\n")
 		
 		if(.name == sweCompositePhenomenonName) {
 			.phen <- parseCompositePhenomenon(.compPhen, sos = sos,
@@ -370,7 +373,8 @@ parsePhenomenonProperty <- function(obj, sos, verbose = FALSE) {
 			.obsProp <- SwePhenomenonProperty(phenomenon = .phen)
 		}
 		else {
-			warning(paste("Unsupprted observed property: ", .name))
+			warning(paste("[parsePhenomenonProperty] Unsupported observed property: ",
+							.name, "\n"))
 		}
 	}
 	
@@ -383,7 +387,7 @@ parsePhenomenonProperty <- function(obj, sos, verbose = FALSE) {
 parseCompositePhenomenon <- function(obj, sos, verbose = FALSE) {
 	.id <- xmlGetAttr(node = obj, name = "id", default = NA_character_)
 	
-	if(verbose) cat("[parseCompositePhenomenon] with id", .id)
+	if(verbose) cat("[parseCompositePhenomenon] with id", .id, "\n")
 	
 	.dimension <- as.integer(
 			xmlGetAttr(node = obj, name = "dimension", default = NA_character_))
@@ -391,6 +395,9 @@ parseCompositePhenomenon <- function(obj, sos, verbose = FALSE) {
 	
 	.components <- lapply(obj[sweComponentName], parseComponent, sos = sos,
 			verbose = verbose)
+	
+	if(verbose) cat("[parseCompositePhenomenon]", length(.components),
+				"components parsed.\n")
 	
 	# optional:
 	.description <- NA_character_

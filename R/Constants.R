@@ -318,6 +318,8 @@ ogcEIDName <- "EID"
 ogcFIDName <- "FID"
 ogcLiteralName <- "Literal"
 
+smlSensorMLName <- "SensorML"
+
 ################################################################################
 # OWS
 owsServiceIdentificationName <- "ServiceIdentification"
@@ -399,3 +401,5 @@ OwsExceptionsData <- function() {
 # others
 xmlInternalDocumentName <- "XMLInternalDocument"
 xmlTextNodeName <- "text"
+
+.sosCheatSheetDocumentName <- "sos4r_cheat-sheet.pdf"

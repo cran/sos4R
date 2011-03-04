@@ -39,16 +39,16 @@
 .sosExampleServices <- list(
 		"http://v-swe.uni-muenster.de:8080/WeatherSOS/sos",
 		"http://v-sos.uni-muenster.de:8080/PegelOnlineSOSv2/sos",
-		"http://v-sos.uni-muenster.de:8080/AirQualityEurope/sos",
+		"http://giv-uw.uni-muenster.de:8080/AQE/sos",
 		"http://mmisw.org/oostethys/sos",
-		"http://www.gomoos.org/cgi-bin/sos/oostethys_sos.cgi"
+		"http://sdf.ndbc.noaa.gov/sos/server.php"
 		)
 names(.sosExampleServices) <- list(
 		"52 North SOS: Weather Data, station at IFGI, Muenster, Germany",
 		"52 North SOS: Water gauge data for Germany",
 		"52 North SOS: Air Quality Data for Europe",
 		"OOTethys SOS: Marine Metadata Interoperability Initiative (MMI)",
-		"OOTethys SOS: Gulf of Maine Ocean Observing System SOS"
+		"NOAA SOS: "
 		)
 SosExampleServices <- function() {
 	return(.sosExampleServices)
@@ -263,24 +263,26 @@ names(.sosDefaultFieldConverters) <- list(
 
 ################################################################################
 # access methods
-
-SosParsingFunctions <- function (..., include = character(0), exclude = character(0)) {
-	.merge(els = list(...), defaults = .sosDefaultParsers,
-			include = include, exclude)
-}
-
-SosEncodingFunctions <- function (..., include = character(0), exclude = character(0)) {
-	.merge(els = list(...), defaults = .sosDefaultEncoders,
-			include = include, exclude)
+#
+SosDataFieldConvertingFunctions <- function (..., include = character(0),
+		exclude = character(0)) {
+	.merge(els = list(...), defaults = .sosDefaultFieldConverters,
+			include = include, exclude = exclude)
 }
 
 SosDefaultConnectionMethod <- function() {
 	return(.sosConnectionMethodPost)
 }
 
-SosDataFieldConvertingFunctions <- function (..., include = character(0),
+SosEncodingFunctions <- function (..., include = character(0),
 		exclude = character(0)) {
-	.merge(els = list(...), defaults = .sosDefaultFieldConverters,
+	.merge(els = list(...), defaults = .sosDefaultEncoders,
+			include = include, exclude = exclude)
+}
+
+SosParsingFunctions <- function (..., include = character(0),
+		exclude = character(0)) {
+	.merge(els = list(...), defaults = .sosDefaultParsers,
 			include = include, exclude = exclude)
 }
 
@@ -296,10 +298,11 @@ SosDataFieldConvertingFunctions <- function (..., include = character(0),
 	if (length(els) > 0) {
 		# which elements are given?
 		.which <- match(names(defaults), names(els))
+#		cat("given names: ", names(defaults))
 		# add defaults (including names) for all that are not given
 		.missing <- is.na(.which)
 		.missingNames <- names(defaults)[.missing]
-		#cat("missing names: "); print(.missingNames)
+#		cat("missing names: ", .missingNames)
 		els[.missingNames] <- defaults[.missing]
 	}
 	# no replacements given, base in-/exclusion on all defaults
@@ -351,7 +354,7 @@ sosDefaultGetCapAcceptFormats <- c("text/xml")
 sosDefaultGetCapOwsVersion <- "1.1.0"
 sosDefaultGetObsResponseFormat <- SosSupportedResponseFormats()[[1]]
 sosDefaultTimeFormat <- "%Y-%m-%dT%H:%M:%OS"
-sosDefaultFilenameTimeFormat <- "%Y-%m-%d_%H:%M:%OS"
+sosDefaultFilenameTimeFormat <- "%Y-%m-%d_%H-%M-%OS"
 sosDefaultTempOpPropertyName <- "om:samplingTime"
 sosDefaultTemporalOperator <- SosSupportedTemporalOperators()[[ogcTempOpTMDuringName]]
 sosDefaultSpatialOpPropertyName <- "urn:ogc:data:location"

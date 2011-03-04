@@ -83,7 +83,7 @@ flush(stderr()); flush(stdout())
 ###   sosDescribeObservationTypeName sosDescribeResultModelName
 ###   sosGetFeatureOfInterestTimeName sosGetResultName
 ###   sosInsertObservationName sosRegisterSensorName mimeTypeCSV mimeTypeOM
-###   mimeTypeSML mimeTypeXML
+###   mimeTypeSML mimeTypeXML smlSensorMLName
 ### Keywords: constants XML
 
 ### ** Examples
@@ -220,10 +220,12 @@ flush(stderr()); flush(stdout())
 
 ### Name: GmlDirectPosition-class
 ### Title: Classes and Construction Functions from the GML Namespace
-### Aliases: GmlDirectPosition-class GmlEnvelope-class GmlFeature-class
-###   GmlFeatureCollection-class GmlFeatureOrNULL-class
-###   GmlFeatureProperty-class GmlGeometry-class GmlLineString-class
-###   GmlPoint-class GmlPointProperty-class GmlPolygon-class
+### Aliases: GmlDirectPosition-class GmlDirectPositionOrNULL-class
+###   GmlEnvelope-class GmlFeature-class GmlFeatureCollection-class
+###   GmlFeatureOrNULL-class GmlFeatureProperty-class
+###   GmlFeatureOrGmlFeaturePropertyOrNULL-class GmlGeometry-class
+###   GmlLineString-class GmlPoint-class GmlPointOrNULL-class
+###   GmlPointProperty-class GmlPolygon-class
 ###   GmlTimeGeometricPrimitive-class GmlTimeInstant-class
 ###   GmlTimeInstantOrNULL-class GmlTimeInstantProperty-class
 ###   GmlTimeInstantPropertyOrNULL-class GmlTimeInterval-class
@@ -671,10 +673,10 @@ flush(stderr()); flush(stdout())
 ###   sosCaps,SOS-method sosContents sosContents-methods
 ###   sosContents,SOS-method sosDataFieldConverters
 ###   sosDataFieldConverters-methods sosDataFieldConverters,SOS-method
-###   sosTime sosTime-methods sosTime,SOS-method sosFilter_Capabilities
-###   sosFilter_Capabilities-methods sosFilter_Capabilities,SOS-method
-###   sosFeaturesOfInterest sosFeaturesOfInterest-methods
-###   sosFeaturesOfInterest,SOS-method
+###   sosTime sosTime-methods sosTime,SOS-method sosTime,list-method
+###   sosFilter_Capabilities sosFilter_Capabilities-methods
+###   sosFilter_Capabilities,SOS-method sosFeaturesOfInterest
+###   sosFeaturesOfInterest-methods sosFeaturesOfInterest,SOS-method
 ###   sosFeaturesOfInterest,SOS,character-method
 ###   sosFeaturesOfInterest,SosObservationOffering-method sosMethod
 ###   sosMethod-methods sosMethod,SOS-method sosMethod,SOS_1.0.0-method
@@ -728,7 +730,7 @@ flush(stderr()); flush(stdout())
 ###   plot,SosObservationOffering,missing-method
 ###   as.SosObservationOffering.SpatialPolygons print.summary.SOS
 ###   print.summary.SosObservationOffering summary.SosObservationOffering
-###   summary.SOS sosChanges sosResult,data.frame-method
+###   summary.SOS sosResult,data.frame-method
 ### Keywords: classes
 
 ### ** Examples
@@ -749,13 +751,11 @@ showClass("SOS")
 ##D # get the meaning of an exception code
 ##D sosExceptionCodeMeaning(ex@exceptionCode)
 ##D 
-##D # print the changes document
-##D sosChanges()
-##D 
+##D # create a CRS object from a URN CRS string
+##D sosGetCRS("urn:ogc:def:crs:EPSG:4217")
 ## End(Not run)
 
-# create a CRS object from a URN CRS string
-sosGetCRS("urn:ogc:def:crs:EPSG:4217")
+
 
 
 
@@ -1174,7 +1174,7 @@ flush(stderr()); flush(stdout())
 
 ### Name: sos4R-package
 ### Title: A client for the OGC Sensor Observation Service
-### Aliases: sos4R-package sos4R
+### Aliases: sos4R-package sos4R sosChanges sosCheatSheet
 ### Keywords: package connection ts spatial database
 
 ### ** Examples
@@ -1221,9 +1221,15 @@ flush(stderr()); flush(stdout())
 ##D 
 ##D # Use custom converting function and connection method. This mechanism works the same for encoders and decoders.
 ##D myConverters <- SosDataFieldConvertingFunctions(
-##D 	"myNumericUnit" = sosConvertDouble,
+##D 	"myNumericUnit" = sosConvertDouble)
 ##D mySos <- SOS(sos.url, method = "GET", dataFieldConverters = myConverters)
 ##D sosDataFieldConverters(mySos)
+##D 
+##D # print the changes document
+##D sosChanges()
+##D 
+##D # get the cheat sheet
+##D sosCheatSheet()
 ##D 
 ## End(Not run)
 

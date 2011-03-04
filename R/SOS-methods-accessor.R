@@ -222,6 +222,9 @@ setMethod(f = "sosObservedProperties", signature = signature(
 setMethod(f = "sosObservedProperties", signature = signature(
 				obj = "OmObservation"),
 		def = function(obj) {
+			if(is.null(obj@observedProperty))
+				return(NULL)
+			
 			.op <- sosObservedProperties(obj@observedProperty)
 			return(.op)
 		})
@@ -597,6 +600,10 @@ setMethod(f = "sosTime", signature = signature(obj = "GmlTimeInstantProperty"),
 setMethod(f = "sosTime", signature = signature(obj = "GmlTimeInstant"),
 		def = function(obj) {
 			return(sosTime(obj@timePosition))
+		})
+setMethod(f = "sosTime", signature = signature(obj = "list"),
+		def = function(obj) {
+			return(lapply(X = obj, FUN = sosTime))
 		})
 
 if (!isGeneric("sosTimeFormat"))

@@ -1,7 +1,7 @@
 Package: sos4R
 Type: Package
 Title: An R client for the OGC Sensor Observation Service
-Version: 0.1-15
+Version: 0.1-17
 Date: 2011-03-04
 Author: Daniel Nuest
 Maintainer: Daniel Nuest <daniel.nuest@uni-muenster.de>
@@ -28,6 +28,6 @@ Collate: Constants.R Class-OWS.R Class-GML.R Class-SWE.R Class-OM.R
         SOS-methods.R Defaults.R SOS-methods-plotting.R
         SOS-methods-coercion.R SML-methods-util.R
         SML-methods-coercion.R
-Packaged: 2011-03-04 15:30:06 UTC; Daniel
+Packaged: 2011-03-14 12:06:37 UTC; Daniel
 Repository: CRAN
-Date/Publication: 2011-03-04 16:22:28
+Date/Publication: 2011-03-14 15:35:21

@@ -227,7 +227,7 @@ SosGetObservationById <- function(
 	.encodingFunction <- sos@encoders[[sos@method]]
 	if(verbose) {
 		.f <- functionBody(.encodingFunction)
-		cat("*** ENCODING FUNCTION (beginning of function body): ",
+		cat("[.sosRequest_1.0.0] Encoding Function (beginning of function body): ",
 				substring(text = .f, first = 0, last = 60), " ... [",
 				max((length(.f) - 60), 0), " more chrs].\n")
 	}
@@ -240,7 +240,7 @@ SosGetObservationById <- function(
 		.dcp <- sosGetDCP(sos, sosName(request), "Get") #sos@url
 		if(is.null(.dcp) || is.na(.dcp)) {
 			.dcp <- sos@url
-			if(verbose) cat("Could not get DCP from operation description.\n")
+			if(verbose) cat("[.sosRequest_1.0.0] Could not get DCP from operation description. This is OK for first GetCapabilities request.\n")
 		}
 			
 		if(isTRUE(grep(pattern = "[\\?]", x = .dcp) > 0)) {
@@ -250,7 +250,8 @@ SosGetObservationById <- function(
 		else .url = paste(.dcp, .encodedRequest, sep = "?")
 		
 		if(verbose || inspect) {
-			cat("*** GET! REQUEST: ", .url, "\n")
+			cat("[.sosRequest_1.0.0] GET!\n[.sosRequest_1.0.0] REQUEST: ", .url,
+					"\n")
 		}
 		
 		.response = getURL(url = .url, .opts = sos@curlOptions,
@@ -259,14 +260,14 @@ SosGetObservationById <- function(
 	}
 	else if(sos@method == .sosConnectionMethodPost) {
 		if(verbose || inspect) {
-			cat("*** POST! REQUEST:\n")
+			cat("[.sosRequest_1.0.0] POST!\n[.sosRequest_1.0.0] REQUEST:")
 			print(.encodedRequest)
 		}
 		
 		.dcp <- sosGetDCP(sos, sosName(request), "Post") #sos@url
 		if(is.null(.dcp) || is.na(.dcp)) {
 			.dcp <- sos@url
-			if(verbose) cat("Could not get DCP from operation description.\n")
+			if(verbose) cat("[.sosRequest_1.0.0] Could not get DCP from operation description.  This is OK for first GetCapabilities request.\n")
 		}
 		
 		# using 'POST' for application/x-www-form-urlencoded content
@@ -278,20 +279,19 @@ SosGetObservationById <- function(
 	}
 	else if(sos@method == .sosConnectionMethodSOAP) {
 		if(verbose || inspect) {
-			print("SOAP! REQUEST:\n")
+			print("[.sosRequest_1.0.0] SOAP! REQUEST:\n")
 			print(.encodedRequest)
 		}
 		
 		# TODO SOAP request method
-		
 	}
 	else {
-		stop(paste("Unsupported method, has to be one",
+		stop(paste("Unsupported method, has to be one of",
 						SosSupportedConnectionMethods()))
 	}
 	
 	if(regexpr("(<html>|<HTML>|<!DOCTYPE HTML)", .response) > 0) {
-		stop(paste("*** ERROR: Got HTML response!:\n", .response, "\n\n"))
+		stop(paste("ERROR: Got HTML response!:\n", .response, "\n\n"))
 	}
 	
 	return(.response)
@@ -316,24 +316,24 @@ setMethod(f = "sosRequest",
 .getCapabilities_1.0.0 <- function(sos, verbose, inspect, sections,
 		acceptFormats, updateSequence, owsVersion,	acceptLanguages) {
 	if (verbose) {
-		cat("** GET CAPABILITIES of", sosUrl(sos), "\n")
+		cat("[.getCapabilities_1.0.0] of", sosUrl(sos), "\n")
 	}
 	
 	.gc <- OwsGetCapabilities(service = sosService,
 			acceptVersions = c(sosVersion(sos)), sections = sections,
 			acceptFormats = acceptFormats, updateSequence = updateSequence,
 			owsVersion = owsVersion, acceptLanguages = acceptLanguages)
-	if(verbose) cat("** REQUEST:\n", toString(.gc), "\n")
+	if(verbose) cat("[.getCapabilities_1.0.0] REQUEST:\n", toString(.gc), "\n")
 	
 	.responseString = sosRequest(sos = sos, request = .gc,
 			verbose = verbose, inspect = inspect)
 	if(verbose){
-		cat("*** RESPONSE:\n", .responseString , "\n")
+		cat("[.getCapabilities_1.0.0] RESPONSE:\n", .responseString , "\n")
 	}
 	
 	.response <- xmlParseDoc(file = .responseString, asText = TRUE)
 	if(verbose || inspect) {
-		cat("** RESPONSE DOC:\n")
+		cat("[.getCapabilities_1.0.0] RESPONSE DOC:\n")
 		print(.response)
 	}
 	
@@ -344,7 +344,7 @@ setMethod(f = "sosRequest",
 		.parsingFunction <- sosParsers(sos)[[sosGetCapabilitiesName]]
 		.caps <- .parsingFunction(obj = .response, sos = sos)
 		if (verbose) {
-			cat("** DONE WITH PARSING!\n")
+			cat("[.getCapabilities_1.0.0] DONE WITH PARSING!\n")
 		} 
 		return(.caps)
 	}
@@ -364,27 +364,42 @@ setMethod(f = "getCapabilities", signature = signature(sos = "SOS_1.0.0"),
 #
 #
 #
-.describeSensor_1.0.0 <- function(sos, procedure, outputFormat, verbose, inspect) {
+.describeSensor_1.0.0 <- function(sos, procedure, outputFormat, verbose,
+		inspect, saveOriginal) {
 	if(verbose) {
-		cat("** DESCRIBE SENSOR: ", procedure, "@", sos@url, "\n")
+		cat("[.describeSensor_1.0.0] ", procedure, "@", sos@url, "\n")
 	}
 	
 	.ds <- SosDescribeSensor(service = sosService, version = sos@version,
 			procedure = procedure, outputFormat = outputFormat)
 	if(verbose)
-		cat("** REQUEST:\n", toString(.ds), "\n")
+		cat("[.describeSensor_1.0.0] REQUEST:\n", toString(.ds), "\n")
 	
 	
 	.responseString = sosRequest(sos = sos, request = .ds,
 			verbose = verbose, inspect = inspect)
 	if(verbose || inspect){
-		cat("*** RESPONSE:\n", .responseString , "\n")
+		cat("[.describeSensor_1.0.0] RESPONSE:\n", .responseString , "\n")
 	}
 	
 	.response <- xmlParseDoc(.responseString, asText = TRUE)
 	if(verbose || inspect) {
-		cat("** RESPONSE DOC:\n")
+		cat("[.describeSensor_1.0.0] RESPONSE DOC:\n")
 		print(.response)
+	}
+	
+	if(saveOriginal) {
+		.filename <- paste(.cleanupFileName(procedure), "_", ".xml",
+				sep = "")
+		
+		if(verbose) {
+			cat("[.describeSensor_1.0.0] Saving original document...",
+					.filename, "in", getwd(), "\n")
+		}
+		
+		saveXML(.response, file = .filename)
+		
+		cat("[sos4R] Original document saved:", .filename, "\n")
 	}
 	
 	if(.isExceptionReport(.response)) {
@@ -393,15 +408,17 @@ setMethod(f = "getCapabilities", signature = signature(sos = "SOS_1.0.0"),
 	else {
 		.parsingFunction <- sosParsers(sos)[[sosDescribeSensorName]]
 		.sml <- .parsingFunction(obj = .response, sos = sos, verbose = verbose)
+		
 		return(.sml)
 	}
 }
 setMethod(f = "describeSensor",
 		signature = signature(sos = "SOS_1.0.0", procedure  = "character"), 
-		def = function(sos, procedure, outputFormat, verbose, inspect) {
+		def = function(sos, procedure, outputFormat, verbose, inspect,
+				saveOriginal) {
 			return(.describeSensor_1.0.0(sos = sos, procedure = procedure,
 							outputFormat = outputFormat, verbose = verbose,
-							inspect = inspect))
+							inspect = inspect, saveOriginal = saveOriginal))
 		}
 )
 
@@ -413,74 +430,86 @@ setMethod(f = "getObservationById",
 		signature = signature(sos = "SOS_1.0.0", observationId = "character"), 
 		def = function(sos, observationId, responseFormat, srsName,
 				resultModel, responseMode, verbose, inspect, saveOriginal) {
-			if(verbose) {
-				cat("** GET OBSERVATION BY ID: ", observationId, "\n")
-			}
-			
-			if(saveOriginal) .filename <- paste(observationId, 
-						format(Sys.time(), sosDefaultFilenameTimeFormat),
-						sep = "_")
-			
-			.go <- SosGetObservationById(service = sosService,
-					version = sos@version, observationId = observationId,
-					responseFormat =  responseFormat, srsName = srsName,
-					resultModel = resultModel, responseMode = responseMode)
-			
-			if(verbose)
-				cat("** REQUEST:\n", toString(.go), "\n")
-			
-			.responseString = sosRequest(sos = sos, request = .go,
-					verbose = verbose, inspect = inspect)
-			if(verbose || inspect){
-				cat("*** RESPONSE:\n", .responseString , "\n")
-			}
-			
-			.response <- xmlParseDoc(.responseString, asText = TRUE)
-			if(verbose || inspect) {
-				cat("** RESPONSE DOC:\n")
-				print(.response)
-			}
-			
-			if(saveOriginal) {
-				.filename <- paste(.filename, ".xml", sep = "")
-				saveXML(.response, file = .filename)
-				
-				if(verbose) {
-					cat("** Saved original document:", .filename, "\n")
-				}
-			}
-			
-			if(.isExceptionReport(.response)) {
-				return(.handleExceptionReport(sos, .response))
-			}
-			else {
-				.parsingFunction <- sosParsers(sos)[[sosGetObservationByIdName]]
-				.obs <- .parsingFunction(obj = .response, sos = sos,
-						verbose = verbose)
-				
-				# remove list if only one element
-				if(is.list(.obs) && length(.obs) == 1)
-					.obs <- .obs[[1]]
-				
-				if(verbose) {
-					cat("** PARSED RESPONSE:\n")
-					print(.obs)
-				}
-				
-				return(.obs)
-			}
-			
-			if(saveOriginal) {
-				save(.responseString, file = .filename)
-				
-				if(verbose) {
-					cat("** Saved original document:", .filename, "\n")
-				}
-			}
-			
-			return(.responseString)
+			return(.getObservationById_1.0.0(sos = sos,
+							observationId = observationId,
+							responseFormat = responseFormat, srsName = srsName,
+							resultModel = resultModel,
+							responseMode = responseMode, verbose = verbose,
+							inspect = inspect, saveOriginal = saveOriginal))
 		}
 )
+
+.getObservationById_1.0.0 <- function(sos, observationId, responseFormat, srsName,
+		resultModel, responseMode, verbose, inspect, saveOriginal) {
+	if(verbose) {
+		cat("[getObservationById] ID", observationId, "\n")
+	}
+	
+	if(saveOriginal) .filename <- paste(observationId, 
+				format(Sys.time(), sosDefaultFilenameTimeFormat),
+				sep = "_")
+	
+	.go <- SosGetObservationById(service = sosService,
+			version = sos@version, observationId = observationId,
+			responseFormat =  responseFormat, srsName = srsName,
+			resultModel = resultModel, responseMode = responseMode)
+	
+	if(verbose)
+		cat("[getObservationById] REQUEST:\n", toString(.go), "\n")
+	
+	.responseString = sosRequest(sos = sos, request = .go,
+			verbose = verbose, inspect = inspect)
+	if(verbose || inspect){
+		cat("[getObservationById] RESPONSE:\n", .responseString , "\n")
+	}
+	
+	.response <- xmlParseDoc(.responseString, asText = TRUE)
+	if(verbose || inspect) {
+		cat("[getObservationById] RESPONSE DOC:\n")
+		print(.response)
+	}
+	
+	if(saveOriginal) {
+		.filename <- paste(.filename, ".xml", sep = "")
+		saveXML(.response, file = .filename)
+		
+		if(verbose) {
+			cat("[getObservationById] Saved original document:",
+					.filename, "\n")
+		}
+	}
+	
+	if(.isExceptionReport(.response)) {
+		return(.handleExceptionReport(sos, .response))
+	}
+	else {
+		.parsingFunction <- sosParsers(sos)[[sosGetObservationByIdName]]
+		.obs <- .parsingFunction(obj = .response, sos = sos,
+				verbose = verbose)
+		
+		# remove list if only one element
+		if(is.list(.obs) && length(.obs) == 1)
+			.obs <- .obs[[1]]
+		
+		if(verbose) {
+			cat("[getObservationById] PARSED RESPONSE:\n")
+			print(.obs)
+		}
+		
+		return(.obs)
+	}
+	
+	if(saveOriginal) {
+		save(.responseString, file = .filename)
+		
+		if(verbose) {
+			cat("[getObservationById] Saved original document:",
+					.filename, "\n")
+		}
+	}
+	
+	return(.responseString)
+}
 
 
 #
@@ -491,11 +520,11 @@ setMethod(f = "getObservationById",
 		result, resultModel, responseMode, BBOX, latest, verbose, inspect,
 		saveOriginal) {
 	
-	if(saveOriginal) .filename <- paste(offeringId, 
+	if(saveOriginal) .filename <- paste(.cleanupFileName(offeringId), 
 				format(Sys.time(), sosDefaultFilenameTimeFormat), sep = "_")
 	
 	if(verbose)
-		cat("** GET OBSERVATION to ", sos@url, " with offering ",
+		cat("[.getObservation_1.0.0] to ", sos@url, " with offering ",
 				offeringId, "\n")
 	
 	if(latest) .eventTime <- list(.createLatestEventTime(verbose))
@@ -513,13 +542,13 @@ setMethod(f = "getObservationById",
 			BBOX = BBOX)
 	
 	if(verbose)
-		cat("** REQUEST:\n", toString(.go), "\n")
+		cat("[.getObservation_1.0.0] REQUEST:\n", toString(.go), "\n")
 	
 	.responseString = sosRequest(sos = sos, request = .go,
 			verbose = verbose, inspect = inspect)
-	if(verbose || inspect){
-		cat("*** RESPONSE size:", object.size(.responseString) , ")\n")
-	}
+	
+	cat("[sos4R] Received response (size:", object.size(.responseString),
+			"bytes), starting parsing ...\n")
 	
 	# responseFormat starts with text/xml OR the response string is XML content,
 	# for example an exeption (which is xml even if request wants something else
@@ -527,11 +556,11 @@ setMethod(f = "getObservationById",
 	.contentType <- attributes(.responseString)[["Content-Type"]]
 	
 	if(isXMLString(.responseString) || .contentType == mimeTypeXML) {
-		if(verbose) cat("Got XML string as response.\n")
+		if(verbose) cat("[.getObservation_1.0.0] Got XML string as response.\n")
 		
 		.response <- xmlParseDoc(.responseString, asText = TRUE)
 		if(verbose || inspect) {
-			cat("** RESPONSE DOC:\n")
+			cat("[.getObservation_1.0.0] RESPONSE DOC:\n")
 			print(.response)
 		}
 		
@@ -540,7 +569,8 @@ setMethod(f = "getObservationById",
 			saveXML(.response, file = .filename)
 			
 			if(verbose) {
-				cat("** Saved original document:", .filename, "\n")
+				cat("[.getObservation_1.0.0] Saved original document:",
+						.filename, "\n")
 			}
 		}
 		
@@ -566,27 +596,38 @@ setMethod(f = "getObservationById",
 		else .resultLength <- NA
 		
 		if(verbose) {
-			cat("** PARSED RESPONSE:\n")
-			print(.obs)
+			cat("[.getObservation_1.0.0] PARSED RESPONSE:\n",
+					toString(.obs), "\n")
+			cat("[.getObservation_1.0.0] Result length(s): ",
+					toString(.resultLength), "\n")
 		}
 		
-		.msg <- paste("Finished getObservation to", sos@url, "\n\t--> received",
-				length(.obs), "observation(s) having", sum(.resultLength),
-				"result values [", toString(.resultLength), "].\n")
-		if(saveOriginal) .msg <- paste(.msg, "\tOriginal document saved:",
+		if(any(sapply(.obs, is.null))) {
+			.countInfo <- paste("NO DATA, turn on 'verbose' for more information.")
+		}
+		else {
+			.countInfo <- paste(sum(.resultLength), "result values [",
+					toString(.resultLength), "].")
+		}
+
+		.msg <- paste("[sos4R] Finished getObservation to", sos@url,
+				"\n\t--> received", length(.obs), "observation(s) having",
+				.countInfo , "\n")
+		if(saveOriginal) .msg <- paste(.msg, "[sos4R] Original document saved:",
 					.filename, "\n")
 		cat(.msg)
 		
+		# RETURN ###
 		return(.obs)
 	}
 	else {
 		if(verbose)
-			cat("Did NOT get XML string as response, trying to parse with",
+			cat("[.getObservation_1.0.0] Did NOT get XML string as response, trying to parse with",
 					responseFormat, "\n")
 		
 		if(mimeTypeCSV == responseFormat) {
 			if(verbose || inspect) {
-				cat("** CSV RESPONSE:\n")
+				cat("[.getObservation_1.0.0] CSV RESPONSE:\n")
 				print(.responseString)
 			}
 		
@@ -598,13 +639,14 @@ setMethod(f = "getObservationById",
 				write.csv(.csv, .filename)
 			}
 			
-			.msg <- paste("Finished getObservation to", sos@url, "\n\t",
+			.msg <- paste("[sos4R] Finished getObservation to", sos@url, "\n\t",
 					"--> received observations with dimensions", 
 					toString(dim(.csv)), "\n")
-			if(saveOriginal) .msg <- paste(.msg, "\tOriginal document saved:",
-						.filename, "\n")
+			if(saveOriginal) .msg <- paste(.msg,
+						"[sos4R] Original document saved:", .filename, "\n")
 			cat(.msg)
 		
+			# RETURN ###
 			return(.csv)
 		} # grep(pattern = mimeTypeCSV...
 		
@@ -613,17 +655,18 @@ setMethod(f = "getObservationById",
 
 	# not xml nor csv
 	if(verbose || inspect) {
-		cat("** UNKNOWN RESPONSE FORMAT:\n")
+		cat("[.getObservation_1.0.0] UNKNOWN RESPONSE FORMAT:\n")
 		cat(.responseString, "\n")
-		cat("Content-Type: ", .contentType)
+		cat("[.getObservation_1.0.0] Content-Type: ", .contentType)
 		warning("Unknown response format!")
 	}
 	
 	if(saveOriginal) {
 		save(.responseString, file = .filename)
-		cat("** Saved original document:", .filename)
+		cat("[sos4R] Saved original document:", .filename)
 	}
 	
+	# RETURN ##############
 	return(.responseString)
 }
 setMethod(f = "getObservation",
@@ -632,10 +675,9 @@ setMethod(f = "getObservation",
 		def = function(sos, offering, observedProperty, responseFormat, srsName,
 				eventTime,	procedure, featureOfInterest, result, resultModel,
 				responseMode, BBOX, latest, verbose, inspect, saveOriginal) {
-			
-			if(is.character(offering))
-				.offeringId <- offering
-			else .offeringId <- offering@id
+			.offeringId <- offering@id
+			if(verbose)	cat("[getObservation] Requesting offering", .offeringId,
+						"by SosObservationOffering.\n")
 			
 			return(.getObservation_1.0.0(sos = sos, offeringId = .offeringId,
 							observedProperty = observedProperty,
@@ -656,8 +698,22 @@ setMethod(f = "getObservation",
 				srsName, eventTime,	procedure, featureOfInterest, result,
 				resultModel, responseMode, BBOX, latest, verbose, inspect,
 				saveOriginal) {
+			if(verbose)	cat("[getObservation] Requesting offering", offering,
+						"by name.\n")
+			
+			.off <- sosOfferings(sos)[[offering]]
+			
+			if(length(observedProperty) == 0) {
+				.obsProps <- sosObservedProperties(.off)
+				if(verbose) cat("[getObservation] Got observation(s) from offering because none given:",
+							toString(.obsProps), "\n")
+			}
+			else {
+				.obsProps <- observedProperty
+			}
+			
 			return(.getObservation_1.0.0(sos = sos, offering = offering,
-							observedProperty = observedProperty, # cannot base observed properties based on id so easily
+							observedProperty = .obsProps,
 							responseFormat = responseFormat,
 							srsName = srsName, eventTime = eventTime,
 							procedure = procedure,
@@ -684,7 +740,8 @@ setMethod("encodeRequestKVP", "SosDescribeSensor",
 			}
 		}
 )
-.sosEncodeRequestKVPDescribeSensor_1.0.0 <- function(obj, sos, verbose = FALSE) {
+.sosEncodeRequestKVPDescribeSensor_1.0.0 <- function(obj, sos,
+		verbose = FALSE) {
 	# mandatory:
 	.service <- paste("service",
 			.kvpEscapeSpecialCharacters(x = obj@service), sep = "=")
@@ -711,14 +768,19 @@ setMethod("encodeRequestKVP", "SosDescribeSensor",
 setMethod("encodeRequestKVP", "SosGetObservation", 
 		function(obj, sos, verbose = FALSE) {
 			if(obj@version == "1.0.0") {
-				return(.sosEncodeRequestKVPGetObservation_1.0.0(obj, sos, verbose))		
+				return(.sosEncodeRequestKVPGetObservation_1.0.0(obj, sos,
+								verbose))		
 			}
 			else {
 				stop("Version not supported!")
 			}
 		}
 )
-.sosEncodeRequestKVPGetObservation_1.0.0 <- function(obj, sos, verbose = FALSE) {
+.sosEncodeRequestKVPGetObservation_1.0.0 <- function(obj, sos,
+		verbose = FALSE) {
+	if(verbose) cat("[.sosEncodeRequestKVPGetObservation_1.0.0] encoding",
+				toString(obj))
+	
 	# required:
 	.request <- paste("request" , sosGetObservationName, sep = "=")
 	.service <- paste("service",
@@ -732,6 +794,9 @@ setMethod("encodeRequestKVP", "SosGetObservation",
 	
 	.mandatory <- paste(.service, .request, .version, .offering,
 			.observedProperty, sep = "&")
+	
+	if(verbose) cat("[.sosEncodeRequestKVPGetObservation_1.0.0]",
+				"mandatory elements: ", .mandatory)
 	
 	# optional:
 	.optionals = ""
@@ -817,9 +882,13 @@ setMethod("encodeRequestKVP", "SosGetObservation",
 				sep = "&")
 	}
 	
+	if(verbose) cat("[.sosEncodeRequestKVPGetObservation_1.0.0]",
+				"optional elements: ", .optionals)
+	
 	.kvpString <- paste(.mandatory, .optionals, sep = "")
 	
-	if(verbose) cat("Finished KVP string creation: ", .kvpString, "\n")
+	if(verbose) cat("[.sosEncodeRequestKVPGetObservation_1.0.0]",
+				"Finished KVP string creation:\n", .kvpString, "\n")
 	
 	return(.kvpString)
 }
@@ -836,7 +905,7 @@ setMethod("encodeRequestKVP", "SosGetObservationById",
 setMethod("encodeRequestXML", "SosGetObservation", 
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeRequestXML]", class(obj), "\n")
 			}
 			
 			if(obj@version == "1.0.0") {
@@ -848,7 +917,8 @@ setMethod("encodeRequestXML", "SosGetObservation",
 			}
 		}
 )
-.sosEncodeRequestXMLGetObservation_1.0.0 <- function(obj, sos, verbose = FALSE) {
+.sosEncodeRequestXMLGetObservation_1.0.0 <- function(obj, sos,
+		verbose = FALSE) {
 	.xmlDoc <- xmlNode(name = sosGetObservationName,
 			namespace = sosNamespacePrefix,
 			namespaceDefinitions = c(.sosNamespaceDefinitionsForAll,
@@ -938,7 +1008,7 @@ setMethod("encodeRequestXML", "SosGetObservation",
 setMethod("encodeRequestXML", "SosGetObservationById", 
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeRequestXML]", class(obj), "\n")
 			}
 			
 			if(obj@version == "1.0.0") {
@@ -951,7 +1021,8 @@ setMethod("encodeRequestXML", "SosGetObservationById",
 		}
 )
 .sosEncodeRequestXMLGetObservationById_1.0.0 <- function(obj, sos) {
-	.xmlDoc <- xmlNode(name = "GetObservationById", namespace = sosNamespacePrefix,
+	.xmlDoc <- xmlNode(name = "GetObservationById",
+			namespace = sosNamespacePrefix,
 			namespaceDefinitions = c(.sosNamespaceDefinitionsForAll,
 					.sosNamespaceDefinitionsGetObs),
 			attrs=c(.xsiSchemaLocationAttribute,
@@ -997,7 +1068,7 @@ setMethod("encodeRequestXML", "SosGetObservationById",
 setMethod("encodeRequestXML", "SosDescribeSensor", 
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeRequestXML]", class(obj), "\n")
 			}
 			
 			if(obj@version == "1.0.0") {
@@ -1066,7 +1137,7 @@ setMethod(f = "encodeXML",
 		signature = signature(obj = "SosEventTime", sos = "SOS"),
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeXML]", class(obj), "\n")
 			}
 			
 			.temporalOpsClass <- class(obj@temporalOps)
@@ -1089,7 +1160,7 @@ setMethod(f = "encodeXML",
 		signature = signature(obj = "SosEventTimeLatest", sos = "SOS"),
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeXML]", class(obj), "\n")
 			}
 			
 			.eventTime <- xmlNode(name = sosEventTimeName,
@@ -1118,7 +1189,7 @@ setMethod(f = "encodeXML",
 		signature = signature(obj = "SosFeatureOfInterest", sos = "SOS"),
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeXML]", class(obj), "\n")
 			}
 			
 			.foi <- xmlNode(name = sosFeatureOfInterestName,
@@ -1227,9 +1298,9 @@ setMethod(f = "checkRequest",
 				warning("Requested method type ist not listed in capablities for this operation, service might return error!")
 			
 			if(verbose) {
-				cat("Checks: procedure contained=", .procContained,
-						", output supported=", .oFSupported,
-						", method supported", .methodSupported, "\n")
+				cat("Checks: procedure contained =", .procContained,
+						", output supported =", .oFSupported,
+						", method supported =", .methodSupported, "\n")
 			}
 			
 			return(.procContained && .oFSupported && .methodSupported)
@@ -1257,8 +1328,8 @@ setMethod(f = "checkRequest",
 )
 
 setMethod(f = "checkRequest",
-		signature = signature(service = "SOS", operation = "SosGetObservationById",
-				verbose = "logical"),
+		signature = signature(service = "SOS",
+				operation = "SosGetObservationById", verbose = "logical"),
 		def = function(service, operation, verbose) {
 			# check if operation is for SOS and operation is DescribeSensor
 			if(!(operation@service == sosService && 

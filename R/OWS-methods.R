@@ -156,7 +156,8 @@ OwsRange <- function(minimumValue = as.character(NA),
 # checking of operations before they are sent out
 #
 setMethod(f = "checkRequest",
-		signature = signature(service = "SOS", operation = "OwsGetCapabilities_1.1.0",
+		signature = signature(service = "SOS",
+				operation = "OwsGetCapabilities_1.1.0",
 				verbose = "logical"),
 		def = function(service, operation, verbose) {
 			
@@ -165,7 +166,8 @@ setMethod(f = "checkRequest",
 			return(TRUE)
 		})
 setMethod(f = "checkRequest",
-		signature = signature(service = "SOS", operation = "OwsGetCapabilities_2.0.0",
+		signature = signature(service = "SOS",
+				operation = "OwsGetCapabilities_2.0.0",
 				verbose = "logical"),
 		def = function(service, operation, verbose) {
 			
@@ -253,24 +255,29 @@ setMethod(f = "encodeRequestKVP", "OwsGetCapabilities_1.1.0",
 	
 	.optionals = ""
 	if( !is.na(obj@acceptVersions)) {
-		.optionals <- paste(.optionals, .kvpKeyAndValues("acceptVersions", obj@acceptVersions), sep = "&")
+		.optionals <- paste(.optionals, .kvpKeyAndValues("acceptVersions",
+						obj@acceptVersions), sep = "&")
 	}
 	
 	if(!any(sapply(obj@sections, "is.na"), na.rm = TRUE)) {
-		.optionals <- paste(.optionals, .kvpKeyAndValues("sections", obj@sections), sep = "&")
+		.optionals <- paste(.optionals, .kvpKeyAndValues("sections",
+						obj@sections), sep = "&")
 	}
 	
 	if( !is.na(obj@updateSequence)) {
-		.optionals <- paste(.optionals, .kvpKeyAndValues("updateSequence", obj@updateSequence), sep = "&")
+		.optionals <- paste(.optionals, .kvpKeyAndValues("updateSequence",
+						obj@updateSequence), sep = "&")
 	}
 	
 	if(!any(sapply(obj@acceptFormats, "is.na"), na.rm = TRUE)) {
-		.optionals <- paste(.optionals, .kvpKeyAndValues("acceptFormats", obj@acceptFormats), sep = "&")
+		.optionals <- paste(.optionals, .kvpKeyAndValues("acceptFormats",
+						obj@acceptFormats), sep = "&")
 	}
 	
 	.kvpString <- paste(.mandatory, .optionals, sep = "")
 	
-	if(verbose) cat("ENCODED OwsGetCapabilities_1.1.0:", .kvpString, "\n")
+	if(verbose) cat("[.sosEncodeRequestKVPGetCapabilities_1.1.0] done: ",
+				.kvpString, "\n")
 	
 	return(.kvpString)
 }
@@ -283,10 +290,12 @@ setMethod(f = "encodeRequestKVP", "OwsGetCapabilities_2.0.0",
 	.kvpString <- .sosEncodeRequestKVPGetCapabilities_1.1.0(obj)
 	
 	if(!any(sapply(obj@acceptLanguages, "is.na"), na.rm = TRUE)) {
-		.kvpString <- paste(.kvpString, .kvpKeyAndValues("acceptLanguages", obj@acceptLanguages), sep = "&")
+		.kvpString <- paste(.kvpString, .kvpKeyAndValues("acceptLanguages",
+						obj@acceptLanguages), sep = "&")
 	}
 	
-	if(verbose) cat("ENCODED OwsGetCapabilities_2.0.0:", .kvpString, "\n")
+	if(verbose) cat("[.sosEncodeRequestKVPGetCapabilities_2.0.0] done: ",
+				.kvpString, "\n")
 	
 	return(.kvpString)
 }
@@ -297,14 +306,15 @@ setMethod(f = "encodeRequestKVP", "OwsGetCapabilities_2.0.0",
 setMethod("encodeRequestXML", "OwsGetCapabilities_1.1.0", 
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeRequestXML]", class(obj), "\n")
 			}
 			
 			return(.sosEncodeRequestXMLOwsGetCapabilities_1.1.0(obj))
 		}
 )
 .sosEncodeRequestXMLOwsGetCapabilities_1.1.0 <- function(obj) {
-	.xmlDoc <- xmlNode(name = sosGetCapabilitiesName, namespace = sosNamespacePrefix,
+	.xmlDoc <- xmlNode(name = sosGetCapabilitiesName,
+			namespace = sosNamespacePrefix,
 			namespaceDefinitions = c(.sosNamespaceDefinitionsForAll,
 					.sosNamespaceDefinitionsGetCap),
 			attrs=c(.xsiSchemaLocationAttribute,
@@ -347,7 +357,7 @@ setMethod("encodeRequestXML", "OwsGetCapabilities_1.1.0",
 setMethod("encodeRequestXML", "OwsGetCapabilities_2.0.0", 
 		function(obj, sos, verbose = FALSE) {
 			if(verbose) {
-				cat("ENCODE XML", class(obj), "\n")
+				cat("[encodeRequestXML]", class(obj), "\n")
 			}
 			
 			return(.sosEncodeRequestXMLOwsGetCapabilities_2.0.0(obj))

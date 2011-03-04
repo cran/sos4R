@@ -148,6 +148,29 @@
 * Added packages used in demos to DESCRIPTION's Suggest field
 * Fix because of missing dependency for cacheSchweave -> removed caching from vignette. 
 
+2010-03-11		Daniel Nuest	<daniel.nuest@uni-muenster.de>
+
+* Version 0.1-16
+* Added file to create demo for Coastlab SOS
+* Added sosTime() for signature "list"
+* Fixed bug in .getObservation_1.0.0 when calculating length of referenced ObservationProperty
+* Fixed bug in getObservation() when offering is of class "character"
+* Improvements in verbose-messages
+* Improved sosChanges() based on code in vignette()
+* Added sosCheatSheet() function that open the cheat sheet PDF, included new cheat sheet in package
+* Change in createTime...() functions: removed unneccessary format and parsing -- please observe if everything still works!
+* Changed slot type in OmObservation@observedProperty from "SwePhenomenonProperty" to "SwePhenomenonPropertyOrNULL"
+* Testing istSOS and fixing bugs
+
+2010-03-14		Daniel Nuest	<daniel.nuest@uni-muenster.de>
+
+* Version 0.1-17
+* Added saveOriginal to describeSensor
+* Extended parseFile to handle sensor description documents
+* Changed vignette to use saved sensor description from file
+* Fixes with exports and documentation to adhere to changes for R 2.13.0
+
 # TODO:
 * add function =sosUOM()= extracts a named character vector of all attributes named "uom" from a given data.frame/OmObservation/OmObservationCollection/OmMeasurement, names are the variable/column names.
 * implement =summary= functions for =OmObservation= and =OmMeasurement=, should also contain numerical/statistical information about the contained result, the feature, the name, etc.
+* TODOs in testing-SOSs.R

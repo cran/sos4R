@@ -63,7 +63,7 @@ sosCaps(weathersos)
 climatesosUrl = "http://giv-sos.uni-muenster.de:8080/ClimateSOS/sos"
 climatesos = SOS(climatesosUrl, verboseOutput = FALSE)
 id = "urn:ogc:object:feature:WMOStation:10280"
-describeSensor(sos = climatesos, procedure = id)
+describeSensor(sos = climatesos, procedure = id, saveOriginal = "D:/text.xml")
 
 # !!! describeSensor does not check if using GET, because Capabilities lack that DCP in current SOS!
 weathersosUrl = "http://v-swe.uni-muenster.de:8080/WeatherSOS/sos"
@@ -969,18 +969,27 @@ weathersos.offerings <- sosOfferings(weathersos)
 
 # by id
 obs <- getObservationById(sos = weathersos, observationId = "o_3508493",
-		saveOriginal = TRUE, verbose = TRUE)
+		saveOriginal = "lalalaaaaa", verbose = TRUE)
 
 .begin <- sosTime(weathersos.offerings[[1]], convert = TRUE)[["begin"]]
 .timelist <- sosCreateEventTimeList(sosCreateTimePeriod(weathersos,
 				begin = .begin,
 				end = (.begin + 3600*24)))
 obs <- getObservation(sos = weathersos, offering = weathersos.offerings[[1]],
-		eventTime = .timelist, saveOriginal = TRUE)
+		eventTime = .timelist, saveOriginal = TRUE, verbose = TRUE)
+obs <- getObservation(sos = weathersos, offering = weathersos.offerings[[1]],
+		eventTime = .timelist, saveOriginal = "text", verbose = TRUE)
 
 # read it back
 .filename <- paste("o_3508493", , ".xml", sep = "")
 obs.2 <- sosParse(weathersos, .filename)
+
+describeSensor(sos = weathersos,
+		procedure = sosProcedures(weathersos)[[1]][[1]],
+		saveOriginal = TRUE)
+describeSensor(sos = weathersos,
+		procedure = sosProcedures(weathersos)[[1]][[1]],
+		saveOriginal = "sensor11.xml")
 
 ################################################################################
 # url from DCPs

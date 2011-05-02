@@ -44,14 +44,14 @@ str(obs[[1]], max.level = 3)
 str(obs[[2]]@result)
 summary(obs)
 
-sosResult(obs[[1]], coordinates = TRUE)[1:2,]
+sosResult(obs[[1]], coordinates = TRUE)[1:10,]
 
 # plot it!
 x <- 800
 plot(x = obs[[1]]@result[[1]][1:x], y = obs[[1]]@result[[3]][1:x], type = "l",
 		col = "steelblue", main = "Temperature in Muenster and Kaernten, 2009",
 		xlab = "Time (00:00 o'clock)",
-		ylab = "Temperature (°C)",
+		ylab = "Temperature (degree C)",
 		xaxt="n") # do not plot x-axis
 r <- as.POSIXct(round(range(obs[[1]]@result[[1]]), "days"))
 axis.POSIXct(side = 1, x = obs[[1]]@result[[1]][1:x], format = "%d. %h",

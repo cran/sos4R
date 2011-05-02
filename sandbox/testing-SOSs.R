@@ -72,16 +72,16 @@ range(pegelObs[[1]]@result[,3]); range(pegelObs[[2]]@result[,3])
 # Attention: plots ignore the fact that the times do NOT perfectly match!
 #x <- 700
 #plot(x = obs4[[1]]@result[[1]][1:x], y = obs4[[1]]@result[[3]][1:x], type = "l",
-#		col = "steelblue", main = "Temperature in Münster and Kärnten, 2009",
+#		col = "steelblue", main = "Temperature in Muenster and Kaernten, 2009",
 #		xlab = "Time (00:00 o'clock)",
-#		ylab = "Temperature (°C)",
+#		ylab = "Temperature (degree C)",
 #		xaxt="n") # do not plot x-axis
 #r <- as.POSIXct(round(range(obs4[[1]]@result[[1]]), "days"))
 #axis.POSIXct(side = 1, x = obs4[[1]]@result[[1]][1:x], format = "%d. %h",
 #		at = seq(r[1], r[2], by="day"))
 #lines(x = obs4[[2]]@result[[1]][1:x], y = obs4[[2]]@result[[3]][1:x],
 #		col = "orange")
-#legend("topleft", legend = c("Münster", "Kärnten"),
+#legend("topleft", legend = c("Muenster", "Kaernten"),
 #		col = c("steelblue", "orange"), lty = 1, bty="n")
 
 plot(x = pegelObs[[1]]@result[,1], y = pegelObs[[1]]@result[,3], type = "l")
@@ -209,8 +209,8 @@ data <- sosResult(obsSept)
 library("xts")
 tempSept <- xts(x = data[["urn:ogc:def:property:OGC::Temperature"]],
 		order.by = data[["Time"]])
-plot(tempSept, main = "Temperature in Münster",
-		xlab = "Time", ylab = "Temperature (°C)", major.ticks = "weeks")
+plot(tempSept, main = "Temperature in Muenster",
+		xlab = "Time", ylab = "Temperature (degree C)", major.ticks = "weeks")
 
 # time series plots
 tsdisplay(tempSept)
@@ -262,7 +262,7 @@ names(sosResult(temp2009))
 library("xts")
 tempSeries2009 <- xts(x = sosResult(temp2009)[["urn:ogc:def:property:OGC::Temperature"]],
 		order.by = sosResult(temp2009)[["Time"]])
-plot(tempSeries2009, main = "Temperature in Münster", xlab = "Time", ylab = "Temperature (°C)", major.ticks = "months")
+plot(tempSeries2009, main = "Temperature in Muenster", xlab = "Time", ylab = "Temperature (degree C)", major.ticks = "months")
 
 # time series plots
 tsdisplay(tempSeries2009)
@@ -602,6 +602,8 @@ getObservation(sos = stccmop, inspect = TRUE, verbose = TRUE,
 		offering = "saturn04")
 # not time given returns last observation, fixes in parsing required, see above!
 
+# TODO check out "util" sos: 
+stccmoputil <- SOS(url = "http://data.stccmop.org/ws/util/sos.py")
 
 ################################################################################
 # AQE inapplicable error
@@ -658,7 +660,7 @@ summaryRprof("EDCprof.out")
 # not really useful information
 
 ################################################################################
-# FH Kärnten / Kaernten
+# FH Kaernten
 # Contact: Hecke Andreas <A.Hecke@fh-kaernten.at>
 cti <- SOS("http://weatherstation.cti.ac.at:8080/52NSOS_CUAS/sos")
 cti
@@ -704,3 +706,68 @@ cuas.lastHour <- getObservation(cti, cti.off.cuas, verbose = TRUE,
 #		inspect = TRUE,
 		procedure = sosProcedures(cti.off.cuas)[[1]],
 		eventTime = time)
+
+################################################################################
+# some services from the AGILE 2011 paper "Empirical Study ..."
+# TODO test, create demos if interesting data
+
+# WEATHERFLOW
+weatherflow <- SOS(url = "http://www.weatherflow.com/sos/sos.pl")
+
+# offering network-all
+# TODO make demo with weatherflow
+
+# WAVCIS (part of MMI)
+# http://www.wavcis.lsu.edu/SOS/server.asp?request=GetCapabilities
+wavcis <- SOS(url = "http://www.wavcis.lsu.edu/SOS/server.asp")
+
+
+# Sensor Data Bus 
+# http://www.sensordatabus.org/Pages/SOS.aspx
+# http://ogc.codeplex.com/
+# http://ws.sensordatabus.org/Ows/Swe.svc/?service=SOS&request=GetCapabilities
+sdb <- SOS(url = "http://ws.sensordatabus.org/Ows/Swe.svc/")
+
+# Pegelonline @ WSV
+pegelonline <- SOS(url = "http://www.pegelonline.wsv.de/webservices/gis/sos")
+
+# ccip projct, degree SOS provided by Lat-Lon
+# http://ccip.lat-lon.de/
+# http://ccip.lat-lon.de/ccip-sos/services?request=GetCapabilities&service=SOS
+ccip <- SOS(url = "http://ccip.lat-lon.de/ccip-sos/services")
+
+# CCIW
+# http://devgeo.cciw.ca/cgi-bin/mapserv/sostest?request=GetCapabilities?service=SOS
+# Supposed to be Mapserv SOS, but strange error messages about WMS and WFS...
+
+# CSE, probably 52N
+# http://sensorweb.cse.unt.edu:8080/teo/sos?request=GetCapabilities&service=SOS
+
+# DISL
+# Dolphins!
+disl <- SOS(url = "http://gcoos.disl.org/cgi-bin/oostethys_sos.cgi")
+
+# RSMAS
+# gulf of mexico!
+# http://gcoos.rsmas.miami.edu/sos_server.php?service=SOS&request=GetCapabilities
+rsmas <- SOS(url = "http://gcoos.rsmas.miami.edu/sos_server.php")
+
+# INESCPORTO
+# several example services for oostethys and pysos
+# http://gis.inescporto.pt/
+
+# HIOOS
+# Hawaii!
+# http://oos.soest.hawaii.edu/oostethys/sos?service=SOS&request=GetCapabilities
+hioos <- SOS(url = "http://oos.soest.hawaii.edu/oostethys/sos")
+
+# NASA Real Time Mission Monitor
+# TODO real interesting data, check it out!
+# http://rtmm.nsstc.nasa.gov/
+# UAH VAST SOS
+# http://rtmm2.nsstc.nasa.gov/SOS/footprint?request=GetCapabilities&service=SOS&version=1.0.0
+footprint <- SOS(url = "http://rtmm2.nsstc.nasa.gov/SOS/footprint")
+# http://rtmm2.nsstc.nasa.gov/SOS/nadir?request=GetCapabilities&service=SOS&version=1.0.0
+nadir <- SOS(url = "http://rtmm2.nsstc.nasa.gov/SOS/nadir")
+
+# 

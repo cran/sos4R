@@ -80,8 +80,9 @@ coords.proc1
 ##################
 # plot all values:
 names(result.proc1)
-plot(result.proc1[7:9],
-		main = paste(np.proc[[1]], "at", toString(coords.proc1)))
+plot(result.proc1[8:9],
+		main = paste(np.proc[[1]], "at", toString(coords.proc1), "from, to",
+				toString(range(result.proc1[["Time"]]))))
 
 ######################
 # xyplot, dotplot ...:
@@ -135,7 +136,7 @@ str(obs.proc123[[1]])
 sosProcedures(obs.proc123)
 
 ################################################################################
-# Land Oberösterreich
+# Land Oberoesterreich
 ooe <- SOS("http://ispacevm10.researchstudio.at/geoservices/ooe", sections = NA,
 		verboseOutput = TRUE)
 ooe

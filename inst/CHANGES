@@ -196,3 +196,12 @@
 * Changed parser detection, now uses mime type, too. This changes parser exchangeability for known mime types!
 * Added attribute to observations (if response is saved) with file name (sosAttributeFileName)
 * Added %\VignetteDepends{xtable} to vignette and depedency xtable as well - got NOTEd for that in R 2.13 checks
+
+2010-05-02		Daniel Nuest	<daniel.nuest@uni-muenster.de>
+
+* Bug in sosGetCRS, returns NULL and prints error if the EPSG code is not recognized
+* Fixed non-ASCII characters, Umlaute, and incomplete last lines (when using readLines(...)) throughout the package
+
+2010-05-XX		Daniel Nuest	<daniel.nuest@uni-muenster.de>
+
+* ...

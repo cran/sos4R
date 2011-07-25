@@ -115,7 +115,8 @@ flush(stderr()); flush(stdout())
 ###   sosDefaultTemporalOperator sosDefaultTimeFormat
 ###   sosDefaultFilenameTimeFormat sosDefaultColumnNameFeatureIdentifier
 ###   sosDefaultColumnNameLat sosDefaultColumnNameLon
-###   sosDefaultColumnNameSRS sosDefaultColorPalette SosParsingFunctions
+###   sosDefaultColumnNameSRS sosDefaultColorPalette
+###   sosDefaultReferenceFrameSensorDescription SosParsingFunctions
 ###   SosEncodingFunctions SosDisabledParsers
 ###   SosDataFieldConvertingFunctions SosExampleServices SosDefaults
 ### Keywords: misc

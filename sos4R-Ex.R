@@ -1181,7 +1181,7 @@ flush(stderr()); flush(stdout())
 
 ### Name: sos4R-package
 ### Title: A client for the OGC Sensor Observation Service
-### Aliases: sos4R-package sos4R sosChanges sosCheatSheet
+### Aliases: sos4R-package sos4R sosChanges sosCheatSheet sosNews
 ### Keywords: package connection ts spatial database
 
 ### ** Examples
@@ -1232,11 +1232,13 @@ flush(stderr()); flush(stdout())
 ##D mySos <- SOS(sos.url, method = "GET", dataFieldConverters = myConverters)
 ##D sosDataFieldConverters(mySos)
 ##D 
-##D # print the changes document
-##D sosChanges()
-##D 
 ##D # get the cheat sheet
 ##D sosCheatSheet()
+##D 
+##D # view the NEWS file
+##D sosNews()
+##D # DEPRECATED: the changes document
+##D #sosChanges()
 ##D 
 ## End(Not run)
 

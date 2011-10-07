@@ -7,6 +7,7 @@
 
 \alias{sosChanges}
 \alias{sosCheatSheet}
+\alias{sosNews}
 
 \title{A client for the OGC Sensor Observation Service}
 
@@ -18,8 +19,8 @@
 	\tabular{ll}{
 	Package: \tab sos4R\cr
 	Type: \tab Package\cr
-	Version: \tab 0.2-5\cr
-	Date: \tab 2011-07-25\cr
+	Version: \tab 0.2-6\cr
+	Date: \tab 2011-10-07\cr
 	License: \tab GPL-2\cr
 	LazyLoad: \tab yes\cr
 	Depends: \tab XML, RCurl\cr
@@ -93,11 +94,13 @@ myConverters <- SosDataFieldConvertingFunctions(
 mySos <- SOS(sos.url, method = "GET", dataFieldConverters = myConverters)
 sosDataFieldConverters(mySos)
 
-# print the changes document
-sosChanges()
-
 # get the cheat sheet
 sosCheatSheet()
+
+# view the NEWS file
+sosNews()
+# DEPRECATED: the changes document
+#sosChanges()
 
 }
 

@@ -83,7 +83,8 @@ flush(stderr()); flush(stdout())
 ###   sosDescribeObservationTypeName sosDescribeResultModelName
 ###   sosGetFeatureOfInterestTimeName sosGetResultName
 ###   sosInsertObservationName sosRegisterSensorName mimeTypeCSV mimeTypeOM
-###   mimeTypeSML mimeTypeXML smlSensorMLName sosAttributeFileName
+###   mimeTypeSML mimeTypeXML mimeSubtypeOM smlSensorMLName
+###   sosAttributeFileName
 ### Keywords: constants XML
 
 ### ** Examples

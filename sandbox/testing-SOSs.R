@@ -848,3 +848,140 @@ seacruise <- sosOfferings(iia)["SEA CRUISE 2003"]
 
 # TODO plot it, use spacetime classes
 
+
+################################################################################
+# TODO check out SOSs in ERDDAP
+# these are NOAA SOSs, but maybe new ones, you never know...
+#
+# http://coastwatch.pfeg.noaa.gov/erddap/info/index.html
+
+################################################################################
+# TODO check out Wupperverband SOS
+#
+library("sos4R")
+fluggs <- SOS(url = "http://fluggs.wupperverband.de/sos/sos")
+
+sosContents(fluggs)
+
+sosProcedures(fluggs)
+sosObservedProperties(fluggs)
+
+
+################################################################################
+# TODO try out new CO-OPS SOSs
+# 
+#CO-OPS has expanded its SOS services with an addition of the following 7 new services.
+#
+#One Minute Water Level Data
+#Six Minute Water Level Data
+#Hourly Height Water Level Data
+#High Low Water Level Data
+#Daily Mean Water Level Data
+#Harmonic Constituents
+#Datums
+
+#These services are offered for single station and as collections.
+#In addition, CO-OPS is now providing its observational data in KML format. All
+#CO-OPS SOS services, including the newly added ones, can be retrieved in KML.
+#
+#Please note that these service are presently available on the evaluation test
+#site (http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos-test/) till November
+#30th 2011.
+#
+#On December 1, 2011 at 10 am EDT, CO-OPS will add these new changes to our
+#operational SOS web site (http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/).
+#A reminder email will be sent out that week.
+
+ioos_testing <- SOS(url = "http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos-test/SOS",
+#		method = SosSupportedConnectionMethods()[["GET"]]
+)
+sosObservedProperties(ioos_testing)[["network-All"]]
+unique(unlist(sosObservedProperties(ioos_testing)))
+
+################################################################################
+# TODO check out SOS from Sandre, French National Service for Water Data and 
+#                         Common Repositories Management 
+#                         http://sandre.eaufrance.fr/
+#
+# WaterML response format!
+#
+# http://services.sandre.eaufrance.fr/52nSOSv3_WML/sos?request=GetCapabilities&service=SOS
+library("sos4R")
+
+sandre_converters <- SosDataFieldConvertingFunctions(
+	"http://www.opengis.net/def/property/OGC/0/FeatureOfInterest" = sosConvertString)
+sandre <- SOS(url = "http://services.sandre.eaufrance.fr/52nSOSv3_WML/sos",
+		dataFieldConverters = sandre_converters)
+
+sosObservedProperties(sandre)
+sosProcedures(sandre)
+
+sosResponseFormats(sandre)$GetObservation
+# not mentioning WaterML...
+sosResultModels(sandre)[["GetObservation"]]
+# wml2:TimeseriesObservation !
+#
+# TODO try to request WaterML TimeseriesObservation, must add the namespace to the request
+# TODO parse WaterML TimeseriesObservation
+#
+
+#
+# PROCEDURES
+#
+# testing handling of multiple sensors in describeSensor
+sensor_1_1 <- describeSensor(sos = sandre, # verbose = TRUE,
+		procedure = sosProcedures(sandre)[[1]])
+str(sensor_1_1)
+# not discovery profile, no elements are found:
+sensor_1_1[[1]]@xml
+
+# multiple sensors work, but saving, too?
+getwd()
+describeSensor(sos = sandre, procedure = sosProcedures(sandre)[[1]],
+		saveOriginal = TRUE)
+
+sosCoordinates(sensor_1_1)
+plot(sensor_1_1) # does not work... yet
+
+#
+# DATA
+#
+sosOfferings(sandre)[[1]] # check valid time interval
+myTime <- sosCreateTime(sos = sandre, time = "2011-10-18::2011-10-20")
+myOffering <- sosOfferings(sandre)[[1]]
+obs_1 <- getObservation(sos = sandre, verbose = TRUE,
+		offering = myOffering, inspect = TRUE,
+		procedure = sosProcedures(myOffering)[[1]],
+		# limit to one procedure during testing, works
+		eventTime = myTime)
+# first time run with warnings for missing converters, added to defaults, was
+# http://www.opengis.net/def/property/OGC/0/SamplingTime and
+str(obs_1)
+
+#################
+#Warning message:
+#		In if (.contentType == mimeTypeXML) { :
+#					the condition has length > 1 and only the first element will be used
+
+
+# TODO fix observed properties for OmObservation and OmObservationCollection
+sosObservedProperties(obs_1_[[1]])
+obs_1[[1]]@observedProperty
+
+
+obs <- getObservation(sos = sandre, verbose = TRUE,
+		offering = myOffering, inspect = TRUE,
+		eventTime = myTime)
+#######
+# Error in match.names(clabs, names(xi)) : 
+#  names do not match previous names
+# FIXME
+
+################################################################################
+# TODO check out SOS from Spain with environmental data
+# http://elcano.dlsi.uji.es:8082/SOSM2/sos?request=GetCapabilities&service=SOS
+elcano <- SOS(url = "http://elcano.dlsi.uji.es:8082/SOSM2/sos")
+
+sosContents(elcano)
+
+sosOfferings(elcano)

@@ -161,8 +161,7 @@ kml <- getObservation(ioos, offering = "urn:ioos:network:noaa.nws.ndbc:all",
 kml
 
 # TODO do sth. with the KML, e.g. export using examples from Spatial-Analyst?
-
-
+# TODO use plotKML to create an output?
 
 
 ################################################################################
@@ -171,27 +170,6 @@ ioos.get <- SOS(url = "http://sdf.ndbc.noaa.gov/sos/server.php",
 		method = SosSupportedConnectionMethods()[["GET"]],
 		timeFormat = "%Y-%m-%dT%H:%M:%SZ")
 #		parsers = SosParsingFunctions("GetObservation" = parseNoParsing)
-
-################################################################################
-# another SOS from IOOS
-# https://geossregistries.info/geosspub/component_details_ns.jsp?compId=urn:uuid:c1af67f9-4a1b-42d2-b352-e2fdb3bcdeb1
-# request examples at http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/
-# Also good information about existing/active stations!
-# Presentation: http://sdf.ndbc.noaa.gov/sos/IOOS_DIF_SOS_Project.ppt
-ioosdif <- SOS(url = "http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS")
-#		method = "GET",
-#		verboseOutput = TRUE)
-ioosdif.off <- sosOfferings(ioosdif)
-sosName(ioosdif.off)
-
-length(ioosdif.off)
-# 771
-
-# 
-sosResponseFormats(ioosdif)
-
-# TODO create a map using background data as described in
-# http://r-sig-geo.2731867.n2.nabble.com/Reading-a-WMS-layer-as-a-sp-object-td6311972.html
 
 
 ###################################

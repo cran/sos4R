@@ -21,6 +21,7 @@ worldHigh_Lines <- map2SpatialLines(worldHigh, proj4string = crs)
 
 plot(worldHigh_Lines, col = "grey50")
 plot(weathersos, add = TRUE, lwd = 3)
+
 title(main = paste("Offerings by '", sosTitle(weathersos), "'", sep = ""),
 		sub = toString(names(sosOfferings(weathersos))))
 
@@ -109,12 +110,14 @@ head(x[[3]])
 
 ##############
 library("forecast")
-tempSept_ts <- as(tempSept, "ts")
-summary(tempSept_ts)
 
-as.xts(data, descr="test")
-Fehler in as.POSIXlt.character(x, tz, ...) : 
-  character string is not in a standard unambiguous format
+##############
+#tempSept_ts <- as(tempSept, "ts")
+#summary(tempSept_ts)
+#
+#as.xts(data, descr="test")
+#Fehler in as.POSIXlt.character(x, tz, ...) : 
+#  character string is not in a standard unambiguous format
 
 ##############
 library("zoo")
@@ -136,33 +139,48 @@ forecast <- predict(model,5000)
 lines(forecast$pred, lwd = 3, col = "red")
 
 
-########
-library("tseries")
-
-tempSept.arma <- arma(tempSept_zoo)
-any(is.na(tempSept_zoo))
-
-########
-library("robfilter")
-
-filtered <- dw.filter(tempSept_zoo, outer.width = 201, inner.width = 101,
-											method = c("RM"))
-plot(filtered)
-
-
-tempSept.rf <- robust.filter(tempSept_zoo, width=23)
-plot(tempSept.rf)
+#########
+#library("tseries")
+#
+#tempSept.arma <- arma(tempSept_zoo)
+#any(is.na(tempSept_zoo))
+#
+#########
+#library("robfilter")
+#
+#filtered <- dw.filter(tempSept_zoo, outer.width = 201, inner.width = 101,
+#											method = c("RM"))
+#plot(filtered)
+#
+#
+#tempSept.rf <- robust.filter(tempSept_zoo, width=23)
+#plot(tempSept.rf)
 
 
 ################################################################################
 # DescribeSensor Operation
-procs <- unique(unlist(sosProcedures(weathersos)))
 
-describeSensor(weathersos, procs[[1]]) #, verbose = TRUE)
+#weathersos <- SOS(url = "http://v-swe.uni-muenster.de:8080/WeatherSOS/sos")
+
+procs <- unique(unlist(sosProcedures(weathersos)))
+sensor1 <- describeSensor(weathersos, procs[[1]]) #, verbose = TRUE)
+sensor1
+
+###########
+# debugging
+# If working on SensorML stuff, and changing a function and sourcing it, one
+# must regenerate weathersos so that the new functions are utilized!
+# weathersos <- SosResetParsingFunctions(weathersos)
+# To check see: sosParsers(weathersos)[[sosDescribeSensorName]]
+#
+
+debugSensor <- describeSensor(weathersos, procs[[12]], verbose = TRUE)
+sosCoordinates(debugSensor)
+as.SensorML.SpatialPointsDataFrame(debugSensor)
 
 procs_descr <- lapply(X = procs, FUN = describeSensor, # verbose = TRUE,
 		sos = weathersos)
-procs_descr
+str(procs_descr, max.level = 3)
 
 proc1 <- procs_descr[[1]]
 proc1
@@ -184,7 +202,7 @@ coords
 #str(coords)
 attributes(coords)
 sosGetCRS(proc1)
-sosGetCRS(procs_descr)
+sosGetCRS(procs_descr)[1:2]
 sosBoundedBy(proc1)
 
 # create spatial representation, which also will be basis for plottting

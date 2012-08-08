@@ -120,6 +120,7 @@ flush(stderr()); flush(stdout())
 ###   sosDefaultReferenceFrameSensorDescription SosParsingFunctions
 ###   SosEncodingFunctions SosDisabledParsers
 ###   SosDataFieldConvertingFunctions SosExampleServices SosDefaults
+###   SosResetParsingFunctions
 ### Keywords: misc
 
 ### ** Examples
@@ -182,6 +183,11 @@ SosExampleServices()
 
 # a named list of all defaults
 SosDefaults()
+
+# replace the parsing functions with the default ones
+## Not run: 
+##D sos <- SosResetParsingFunctions(sos)
+## End(Not run)
 
 
 

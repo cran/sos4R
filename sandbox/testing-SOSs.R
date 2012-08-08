@@ -917,17 +917,49 @@ sosObservedProperties(sandre)
 sosProcedures(sandre)
 
 sosResponseFormats(sandre)$GetObservation
-# not mentioning WaterML...
+# not mentioning WaterML, probably OK
 sosResultModels(sandre)[["GetObservation"]]
 # wml2:TimeseriesObservation !
 #
-# TODO try to request WaterML TimeseriesObservation, must add the namespace to the request
+# TODO try to request WaterML TimeseriesObservation, must add the namespace to
+# the request and need a mechanism for that.
 # TODO parse WaterML TimeseriesObservation
 #
 
-#
+##########
+# GET DATA
+myOffering <- sosOfferings(sandre)[["A2140100"]]
+
+# TODO the time handling workflow based on the available time should be easier
+# TODO implement sosTime with convert option, possible default it to TRUE?
+lastTime <- sosTime(sosTime(myOffering)@endPosition)
+lastTime.posix <- as.POSIXct(lastTime)
+startTime.posix <- lastTime.posix - 3600 * 24 * 7 # one week
+myTimeString <- paste(startTime.posix, "::", lastTime.posix, sep = "")
+myTime <- sosCreateTime(sos = sandre, time = myTimeString)
+myTime
+
+lastDayA2140100 <- getObservation(sos = sandre, offering = myOffering,
+		eventTime = myTime)
+summary(sosResult(lastDayA2140100[[1]]))
+summary(sosResult(lastDayA2140100[[2]]))
+
+sosResult(lastDayA2140100)
+# cannot join because there are two differen observations
+
+waterheight <- sosResult(lastDayA2140100[[2]])
+plot(waterheight)
+
+plot(x = waterheight$SamplingTime, y = waterheight$WATERHEIGHT, type = "l",
+		main = paste(sosId(myOffering), sosName(myOffering)),
+		# TODO should work with sosName(waterheight) or better sosName(lastDayA2140100[[1]])
+		ylab = paste("Waterheight [", sosUOM(waterheight), "]"),
+		xlab = "sampling time")
+
+
+
+############
 # PROCEDURES
-#
 # testing handling of multiple sensors in describeSensor
 sensor_1_1 <- describeSensor(sos = sandre, # verbose = TRUE,
 		procedure = sosProcedures(sandre)[[1]])
@@ -985,3 +1017,49 @@ elcano <- SOS(url = "http://elcano.dlsi.uji.es:8082/SOSM2/sos")
 sosContents(elcano)
 
 sosOfferings(elcano)
+
+################################################################################
+# TODO check out SOS from Sensors4All Framework, FH Kärnten
+sensors4all <- SOS(url = "http://weatherstation.cti.ac.at:8080/52nSOSv3_CUAS/sos")
+
+sosOfferings(sensors4all)
+sensors4all_off <- sosOfferings(sensors4all)[[1]]
+plot(sensors4all)
+
+library(maps); library(mapdata); library(maptools)
+if(!require(rgdal, quietly = TRUE))
+	print("rgdal not present: CRS values will not be converted correctly")
+data(worldHiresMapEnv)
+crs <- sosGetCRS(sensors4all)
+region <- map.where(database = "worldHires",
+		sosCoordinates(sensors4all_off)) # find region
+worldHigh <- pruneMap(map(database = "worldHires", region = region,
+				plot = FALSE))
+worldHigh_Lines <- map2SpatialLines(worldHigh, proj4string = crs)
+plot(worldHigh_Lines, col = "grey50")
+plot(sensors4all_off, add = TRUE, lwd = 3)
+
+
+################################################################################
+# TODO check out VITO SOS with air quality data (live data planned) for Antwerp
+library(sos4R)
+idea <- SOS(url = "http://sensorweb.vito.be:8080/IDEA_52nSOSv3.2/sos")
+
+idea_offs <- sosOfferings(idea)
+sosObservedProperties(idea)
+
+alix5_off_time <- sosTime(idea_offs$alix5)
+alix5_time <- sosCreateEventTimeList(alix5_off_time)
+#myTime <- sosCreateTime(sos = idea, time = "2011-10-18::2011-10-20")
+
+alix5_observation <- getObservation(sos = idea, offering = idea_offs$alix5,
+		eventTime = alix5_time, verbose = FALSE)
+alix5_result <- sosResult(alix5_observation)
+
+
+################################################################################
+# TODO check out IRCEL - CELINE SOS with air quality data
+library(sos4R)
+ircel <- SOS(url = "http://sos.irceline.be/sos")
+
+sosOfferings(ircel)

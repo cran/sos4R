@@ -100,17 +100,17 @@ bom <- SOS("http://www.csiro.au/sensorweb/BOM_SOS/sos",
 				"urn:ogc:data:time:iso8601" = csiroTimeConverter,
 				"urn:ogc:def:phenomenon:OGC:rainfall" = sosConvertDouble),
 		switchCoordinates = TRUE, # verbose = TRUE
-		)
+)
 sosTimeFormat(bom)
 sosOfferings(bom)[[1]]
 
 # Tasmania Department of Primary Industries, Parks, Wildlife and Environment (DPIPWE, white on map)
 dpiw <- SOS("http://www.csiro.au/sensorweb/DPIW_SOS/sos?Service=SOS&Request=GetCapabilities", switchCoordinates = TRUE)
 
-# Hydro Tasmania Consulting – Remote Monitoring and Investigation Unit (yellow on map)
+# Hydro Tasmania Consulting - Remote Monitoring and Investigation Unit (yellow on map)
 ht <- SOS("http://www.csiro.au/sensorweb/HT_SOS/sos")
 
-# Forestry Tasmania – Fire Risk Management Branch (green on map)
+# Forestry Tasmania - Fire Risk Management Branch (green on map)
 forestry <- SOS("http://www.csiro.au/sensorweb/Forestry_SOS/sos")
 
 # Tasmania Department of Primary Industries, Parks, Wildlife and Environment (DPIPWE) - Water Assessment Branch
@@ -147,7 +147,7 @@ text(labels = labels, col = sosDefaultColorPalette,
 		x = labelCoords[,1],
 		y = labelCoords[,2])
 title(main = paste(sosTitle(csiro), "and", sosTitle(bom)),
-				sub = paste(sosAbstract(csiro), "\n", sosAbstract(bom)))
+		sub = paste(sosAbstract(csiro), "\n", sosAbstract(bom)))
 
 ################################################################################
 # plot one offering with high resolution background map and cities, including 

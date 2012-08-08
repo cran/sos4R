@@ -434,6 +434,7 @@ setMethod(f = "getCapabilities", signature = signature(sos = "SOS_1.0.0"),
 					.filename, "in", getwd(), "\n")
 		}
 		
+		# TODO alternatively one could use tempfile() instead of implicit getwd()
 		saveXML(.response, file = .filename)
 		
 		cat("[sos4R] Original document saved:", .filename, "\n")
@@ -1428,7 +1429,7 @@ setMethod(f = "encodeKVP",
 			if(verbose) cat("[encodeKVP] POSIXt with value", toString(obj),
 						"\n")
 			
-			.formatted <- strftime(obj = obj, format = sosTimeFormat(sos))
+			.formatted <- strftime(x = obj, format = sosTimeFormat(sos))
 			
 			if(verbose)
 				cat("Formatted ", obj, " to ", .formatted)

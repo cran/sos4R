@@ -65,7 +65,7 @@ read.sos <- function(sos,
 }
 
 
-# method creates a list (whose items can are named and can be used to read data,
+# TODO method creates a list (whose items can are named and can be used to read data,
 # or just used in function read.sos)
 # for all available and valid combinations of off/foi/phen/proc
 #
@@ -74,8 +74,7 @@ read.sos <- function(sos,
 #}
 
 
-#
-# get all the matching ungiven parameters for that are available for a set of 
+# TODO get all the matching ungiven parameters for that are available for a set of 
 # parameters that are given, e.g. all offerings that offer observed property
 # "A" for feature of interest "X", or all procedures measuring an observed
 # property "B".
@@ -90,7 +89,7 @@ read.sos <- function(sos,
 # conversion methods
 #
 sosConvertTime <- function(x, sos) {
-	.t <- as.POSIXct(strptime(x = x, format = sosTimeFormat(sos = sos)))
+	.t <- as.POSIXct(x = strptime(x = x, format = sosTimeFormat(sos = sos)))
 	return(.t)
 }
 sosConvertDouble <- function(x, sos) {
@@ -191,24 +190,30 @@ setMethod(f = "sosCreateTime",
 	else .end <- NULL
 	
 #	print(.start); print(.end);	print(nchar(.start)); print(nchar(.end));
-#	str(.start); print(.end); 
+#	str(.start); print(.end);
 	
-	if(is.null(.end)) {
-		# no end time:
-		.ti <- sosCreateTimeInstant(sos = sos, time = as.POSIXct(.start))
-		.l <- sosCreateEventTimeList(time = .ti,
-				operator = SosSupportedTemporalOperators()[[ogcTempOpTMAfterName]])
+	if(is.null(.start) && is.null(.end)) {
+		warning("Both start and endtime are null based on given time. Returning empty list!")
+		return(list())
 	}
-	else if(nchar(.start) > 0) {
-		.tp <- sosCreateTimePeriod(sos = sos, begin = as.POSIXct(.start),
-				end = as.POSIXct(.end))
-		.l <- sosCreateEventTimeList(.tp)
-	}
-	else if(nchar(.start) < 1) {
-		# no start time:
-		.ti <- sosCreateTimeInstant(sos = sos, time = as.POSIXct(.end))
-		.l <- sosCreateEventTimeList(time = .ti,
-				operator = SosSupportedTemporalOperators()[[ogcTempOpTMBeforeName]])
+	else {
+		if(is.null(.end)) {
+			# no end time:
+			.ti <- sosCreateTimeInstant(sos = sos, time = as.POSIXct(.start))
+			.l <- sosCreateEventTimeList(time = .ti,
+					operator = SosSupportedTemporalOperators()[[ogcTempOpTMAfterName]])
+		}
+		else if(nchar(.start) > 0) {
+			.tp <- sosCreateTimePeriod(sos = sos, begin = as.POSIXct(.start),
+					end = as.POSIXct(.end))
+			.l <- sosCreateEventTimeList(.tp)
+		}
+		else if(nchar(.start) < 1) {
+			# no start time:
+			.ti <- sosCreateTimeInstant(sos = sos, time = as.POSIXct(.end))
+			.l <- sosCreateEventTimeList(time = .ti,
+					operator = SosSupportedTemporalOperators()[[ogcTempOpTMBeforeName]])
+		}
 	}
 	
 	return(.l)
@@ -479,8 +484,8 @@ setMethod(f = "sosGetCRS",
 			tryCatch({
 						.crs <- CRS(.initString)
 					}, error = function(err) {
-						cat("[sosGetCRS] error was detected, probably the EPSG",
-								"code", .epsg, "is not recognized", 
+						warning("[sosGetCRS] error was detected, probably the ",
+								"EPSG code ", .epsg, " is not recognized ", 
 								"(returning NULL):", toString(err))
 					})
 			

@@ -1,4 +1,4 @@
-1f800b25d34672fe33e96ebacffd6491 *DESCRIPTION
+fcee2a900e6f5f5eb09500f92e5987ca *DESCRIPTION
 b234ee4d69f5fce4486a80fdaf4a4263 *LICENCE
 3ad8c1053307efdd9cf575b8aba626a1 *NAMESPACE
 86d056cbe471e27779485ed65fed2380 *R/Class-GML.R
@@ -13,7 +13,7 @@ db5d17fbc07c599a570ca109bff70247 *R/Constants.R
 504778b793ffd4bd25946e3ec4215a2c *R/Defaults.R
 3b343f6185800fbedb72f98b6c58c454 *R/GML-methods-parsing.R
 9abb39bc4c9f7295949867eda595a926 *R/GML-methods.R
-15c321a648534861bac0e984d8c669d8 *R/Generic-methods.R
+c1db736f60b59ed1c1e9ed9e6838d16d *R/Generic-methods.R
 fca3e5349df87987590645a5c6212192 *R/OGC-methods.R
 214d1b5ef17df036ac9db35fdb4510df *R/OM-methods-coercion.R
 1fd5615d2189ab79c0d34de6d807bc3b *R/OM-methods-parsing.R
@@ -30,8 +30,8 @@ ac46e3ca8b606c782246ab613321d684 *R/SOS-methods-accessor.R
 a5def203663659d155df775408d0e763 *R/SOS-methods-coercion.R
 122d4b940144f42f297b93701d19f96d *R/SOS-methods-parsing.R
 b1521f0c5aeece28d6f08fcae2faa9eb *R/SOS-methods-plotting.R
-dbf4cbf10debe7e5f3a8630d05af20d8 *R/SOS-methods-util.R
-ede21e6de55b4f834d8b78aae10d1561 *R/SOS-methods.R
+c85c0b5a5c2f38402f1fb439a15076cf *R/SOS-methods-util.R
+a426411445d4316b5da1f89702283522 *R/SOS-methods.R
 0d2fb3fbe1b0596ee5203fa92d63e3ac *R/SWE-methods-parsing.R
 ce99a24944124afe31564061fba3fd30 *R/SWE-methods.R
 0082fa28cf2dce5f12dd160748623e8d *demo/00Index
@@ -44,15 +44,15 @@ ba7dd702ce6a5b38b467495d6c3e1623 *demo/eo2heaven.R
 1c9d134f8dd8d578ff062e636a2b6a51 *demo/ioos.R
 aab12aa6fbb5470300bc062f316e082a *demo/marinemeta.R
 89fe2f6f1ea43a71f301329a2e8d05a1 *demo/oceanwatch.R
-d8238ede9c804f56afab27288a94c628 *demo/pegel.R
+1234d252c19f77766d436a7eb8fe2d4f *demo/pegel.R
 05ae64146cc6c2a4045137526d0fa38c *demo/southesk.R
 7c336381b7e2cc3269ccc453ac798a86 *demo/weathersos.R
 b234ee4d69f5fce4486a80fdaf4a4263 *gpl-2.0.txt
 94296130b9cf7cd4b1dad60992e37d4b *inst/CHANGES
 14865221e986aa95341519700b1983fe *inst/CITATION
-b1fef3c4f2d14ffccb390cae47ffa450 *inst/NEWS
-0836e12e09ed16d6a6f1b20a59dbf14b *inst/doc/sos4R.Rnw
-ea7c63a9afed2c01f78e2d60ff624e8c *inst/doc/sos4R.pdf
+c70fc3e6c6741797268eb89177e8ffac *inst/NEWS
+9e7a328d34626dd474c2572b5b7d7c96 *inst/doc/sos4R.Rnw
+a114a13fe1d87406be4586717ce8e605 *inst/doc/sos4R.pdf
 b3f20ae1958285c063774fbaea360163 *inst/doc/sos4r_cheat-sheet.pdf
 3f17b908d3ddfe4b167fdbcbf7ff3363 *man/Constants.Rd
 1189930ed3e1135d563b02703551a330 *man/Defaults.Rd
@@ -67,7 +67,7 @@ f66e5c938b84f07c863ccc0724ca0152 *man/OWS.Rd
 b1d59bd93eab2e182c1a8b510a8faae2 *man/OmObservationCollection.Rd
 0d03835ae6abc852230dc55746833b5b *man/SA.Rd
 feefe78546f756fcb57cff3d99abe009 *man/SML.Rd
-1077981a0314e34286fc701fa69a0748 *man/SOS.Rd
+8e0b5398d093a60e8bffe47e7fa789e1 *man/SOS.Rd
 ee0bf955a9e8e23e67a4b821b9f073c6 *man/SWE.Rd
 0ccf78c510d4aa0cd740e2ee9d4b96eb *man/SosBindings.Rd
 39db234e17406585bd4e361db5f0354a *man/SosCapabilities.Rd
@@ -89,7 +89,7 @@ d78e71eb2f2a66f49e75ce4ea60d37bc *man/getCapabilities-methods.Rd
 af012821f446821e962f3314b599f34f *man/getObservation-methods.Rd
 bd68208cb7be00dcbbcecfc01b7624fd *man/parse.Rd
 dbd6a155286e7d47534f20c83e9a388a *man/read.sos.Rd
-4516ace7c02282201a583df0ef112e2e *man/sos4R-package.Rd
+2b0579f45121150ee086f4dfb18f1f2f *man/sos4R-package.Rd
 06e505a959e162d7ab48c407551d393b *man/sosConvert.Rd
 97592304e2a38161e8eb9e2e51b94b43 *man/sosCreate.Rd
 2295ab0d5463aca731641fefb459d413 *man/sosRequest-methods.Rd
@@ -104,7 +104,7 @@ e58bcf29a6a028521d74d972678876df *sandbox/edc-entwicklerforum.R
 a6503e27009b005e9786cc80c84eabd9 *sandbox/testing-SOSs.R
 276820690fe115d47782ea7e8237ccdb *sandbox/testing.R
 0aa6dd4df5b3b189feb9e87ae74bf5e2 *sandbox/useR-2011.R
-e2bd8af1684cc3eb7e8079e84f39f2e9 *sos4R-Ex.R
+0168c8b299534676354563bb3c9cc34c *sos4R-Ex.R
 0d70fa20f5f5934f2a784bd40f08cc58 *tests/base.R
 954bcb58e813f94f04114e798302f108 *vignettes/err.response.RData
 1481274fcc75a5bf33c9127d39d3e088 *vignettes/exceptionResponse.RData
@@ -124,4 +124,4 @@ f9d6a3bdf84566fa6205f4ea96ca2d26 *vignettes/obs.oneWeek.xml
 8fd4ba41ffabba8c7fc11ceaee7c713e *vignettes/obs.temp.xml
 85a24152bdfcc2edc678e9091c37937f *vignettes/obsId.xml
 023208149e9555f091435367b4420b76 *vignettes/procs.descr.RData
-0836e12e09ed16d6a6f1b20a59dbf14b *vignettes/sos4R.Rnw
+9e7a328d34626dd474c2572b5b7d7c96 *vignettes/sos4R.Rnw

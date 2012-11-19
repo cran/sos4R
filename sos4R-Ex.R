@@ -762,7 +762,8 @@ flush(stderr()); flush(stdout())
 ###   as.SosObservationOffering.SpatialPolygons print.summary.SOS
 ###   print.summary.SosObservationOffering summary.SosObservationOffering
 ###   summary.SOS sosResult,data.frame-method sosUOM sosUOM,list-method
-###   sosUOM,data.frame-method
+###   sosUOM,data.frame-method sosCapabilitiesUrl sosCapabilitiesUrl-method
+###   sosCapabilitiesUrl,SOS-method
 ### Keywords: classes
 
 ### ** Examples
@@ -785,6 +786,9 @@ showClass("SOS")
 ##D 
 ##D # create a CRS object from a URN CRS string
 ##D sosGetCRS("urn:ogc:def:crs:EPSG:4217")
+##D 
+##D # create the URL to a GET request for GetCapabilities
+##D sosCapabilitiesUrl(mysos)
 ## End(Not run)
 
 

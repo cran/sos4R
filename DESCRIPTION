@@ -1,11 +1,11 @@
 Package: sos4R
 Type: Package
 Title: An R client for the OGC Sensor Observation Service
-Version: 0.2-10
-Date: 2012-11-19
+Version: 0.2-11
+Date: 2013-05-14
 Authors@R: person(given = "Daniel", family = "Nuest", role = c("cre",
         "aut"), email = "daniel.nuest@uni-muenster.de")
-Depends: R (>= 2.14.0), XML, RCurl (>= 1.4-1), sp, methods, graphics
+Depends: R (>= 2.15.0), XML, RCurl (>= 1.4-1), sp, methods, graphics
 Suggests: spacetime (>= 0.2-0), gstat, maps, maptools, mapdata,
         cshapes, xts, xtable, rgdal
 Description: sos4R is a client for Sensor Observation Services (SOS) as
@@ -30,8 +30,9 @@ Collate: Constants.R Class-OWS.R Class-GML.R Class-SWE.R Class-OM.R
         PrintShowStructureSummmary-methods.R SOS-methods-util.R
         SOS-methods.R SOS-methods-plotting.R SOS-methods-coercion.R
         SML-methods-util.R SML-methods-coercion.R Defaults.R
-Packaged: 2012-11-19 14:37:16 UTC; Daniel
 Author: Daniel Nuest [cre, aut]
 Maintainer: Daniel Nuest <daniel.nuest@uni-muenster.de>
+Packaged: 2013-05-14 16:08:18 UTC; Daniel
+NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2012-11-19 15:10:43
+Date/Publication: 2013-05-14 21:42:55

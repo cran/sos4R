@@ -614,7 +614,7 @@ setMethod(f = "sosGetCRS",
 #
 #
 sosChanges <- function() {
-	.path <- paste(.find.package("sos4R", lib.loc = NULL), "CHANGES",
+	.path <- paste(find.package("sos4R", lib.loc = NULL), "CHANGES",
 			sep = "\\")
 	.con <- file(.path)
 	.lines <- readLines(.con)
@@ -627,7 +627,7 @@ sosChanges <- function() {
 #
 #
 sosNews <- function() {
-	.path <- paste(.find.package("sos4R", lib.loc = NULL), "NEWS",
+	.path <- paste(find.package("sos4R", lib.loc = NULL), "NEWS",
 			sep = "\\")
 	.con <- file(.path)
 	.lines <- readLines(.con)
@@ -640,7 +640,7 @@ sosNews <- function() {
 # based on vignette-function
 #
 sosCheatSheet <- function() {
-	.path <- paste(.find.package("sos4R", lib.loc = NULL), "doc",
+	.path <- paste(find.package("sos4R", lib.loc = NULL), "doc",
 			.sosCheatSheetDocumentName, sep = "\\")
 	
 	.z <- list(file = .sosCheatSheetDocumentName, pdf = .path)

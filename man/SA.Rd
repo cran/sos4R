@@ -57,8 +57,8 @@ Class \code{"\linkS4class{GmlFeatureOrNULL}"}, by class "GmlFeature", distance 2
 }
 
 \usage{
-SaSamplingPoint(sampledFeatures, position, relatedObservation = list(NA), 
-	relatedSamplingFeature = list(NA), surveyDetails = NA, id = NA_character_)
+SaSamplingPoint(sampledFeatures, position, relatedObservation = list(NA),
+                relatedSamplingFeature = list(NA), surveyDetails = NA, id = NA_character_)
 }
 
 \arguments{
@@ -76,16 +76,12 @@ SaSamplingPoint(sampledFeatures, position, relatedObservation = list(NA),
 
 \author{Daniel Nuest \email{daniel.nuest@uni-muenster.de}}
 
-%\note{  }
-%\section{Warning }{}
-%\seealso{}
-
 \examples{
 showClass("SaSamplingPoint")
 
 # create sampling point
-SaSamplingPoint(sampledFeatures = list("feature1", "feature2"), 
-	position = GmlPointProperty(href = "http://link.to/point"))
-
+SaSamplingPoint(sampledFeatures = list("feature1", "feature2"),
+                position = GmlPointProperty(href = "http://link.to/point"))
 }
+
 \keyword{classes}

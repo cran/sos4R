@@ -32,6 +32,13 @@
 \alias{print.summary.OmObservationCollection}
 \alias{summary.OmObservationCollection}
 
+\alias{sosObservableProperties, OmObservation-method}
+\alias{sosObservableProperties, OmObservationCollection-method}
+\alias{sosObservableProperties, SOS-method}
+\alias{sosObservableProperties, SosObservationOffering_2.0.0-method}
+\alias{sosObservableProperties, SweCompositePhenomenon-method}
+\alias{sosObservableProperties, SwePhenomenonProperty-method}
+\alias{sosObservableProperties, list-method}
 
 \title{Class "OmObservationCollection"}
 
@@ -60,8 +67,6 @@ Objects can be created by calls to the construction function of the form \code{O
 \references{Cox, S. (Ed.), Observations and Measurements  - Part 1 - Observation schema, Open Geospatial Consortium Inc., OGC 07-022r1, Version: 1.0}
 
 \author{Daniel Nuest \email{daniel.nuest@uni-muenster.de}}
-
-%\note{}
 
 \seealso{
 \code{\linkS4class{OmObservation}} or \code{\linkS4class{OmMeasurement}}.

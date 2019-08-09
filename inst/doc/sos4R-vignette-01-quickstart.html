@@ -7,11 +7,12 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2019-04-13" />
+<meta name="date" content="2019-08-09" />
 
 <title>sos4R: Accessing Sensor Observation Services from R – Quickstart</title>
 
@@ -95,7 +96,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -315,7 +316,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <address class="author_afil">
 Institute for Geoinformatics, University of Münster, Germany.<br><a class="author_email" href="mailto:#"><a href="mailto:daniel.nuest@uni-muenster.de" class="email">daniel.nuest@uni-muenster.de</a></a>
 </address>
-<h4 class="date">2019-04-13</h4>
+<h4 class="date">2019-08-09</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 <p>The sos4R package provides simple yet powerful access to OGC Sensor Observation Service instances. The package supports both encapsulation and abstraction from the service interface for novice users as well as powerful request building for specialists. sos4R is motivated by the idea to close the gap between the Sensor Web and tools for (geo-)statistical analyses. It implements the core profile of the SOS specification and supports temporal, spatial, and thematical filtering of observations.</p>
@@ -542,9 +543,9 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co">#&gt;   http://sensorweb.demo.52north.org/sensorwebtestbed/service/kvp?service=SOS&amp;version=1.0.0&amp;request=GetObservation&amp;offering=ws2500&amp;observedProperty=AirTemperature&amp;responseFormat=text%2Fxml%3Bsubtype%3D%22om%2F1.0.0%22&amp;eventTime=2017-12-19T00%3A00%3A00%2F2017-12-20T00%3A00%3A00&amp;procedure=ws2500 </span></a>
 <a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">#&gt; [.getObservation_1.0.0] RESPONSE DOC:</span></a>
 <a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co">#&gt; {xml_document}</span></a>
-<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#&gt; &lt;ObservationCollection id=&quot;oc_1555164495266&quot; schemaLocation=&quot;http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd http://www.opengis.net/swe/1.0.1 http://schemas.opengis.net/sweCommon/1.0.1/swe.xsd&quot; xmlns:om=&quot;http://www.opengis.net/om/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:sa=&quot;http://www.opengis.net/sampling/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0.1&quot;&gt;</span></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#&gt; &lt;ObservationCollection id=&quot;oc_1565356433492&quot; schemaLocation=&quot;http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd http://www.opengis.net/swe/1.0.1 http://schemas.opengis.net/sweCommon/1.0.1/swe.xsd&quot; xmlns:om=&quot;http://www.opengis.net/om/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:sa=&quot;http://www.opengis.net/sampling/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0.1&quot;&gt;</span></a>
 <a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#&gt; [1] &lt;gml:boundedBy&gt;\n  &lt;gml:Envelope srsName=&quot;urn:ogc:def:crs:EPSG::4326 ...</span></a>
-<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt; [2] &lt;om:member&gt;\n  &lt;om:Observation gml:id=&quot;o_1555164495266&quot;&gt;\n    &lt;om:sa ...</span></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt; [2] &lt;om:member&gt;\n  &lt;om:Observation gml:id=&quot;o_1565356433492&quot;&gt;\n    &lt;om:sa ...</span></a>
 <a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#&gt; [sos4R] Finished getObservation to http://sensorweb.demo.52north.org/sensorwebtestbed/service/kvp </span></a>
 <a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#&gt;  --&gt; received 1 observation(s) having 72 result values [ 72 ].</span></a></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">getObservation</span>(<span class="dt">sos =</span> mySOS, <span class="dt">offering =</span> off<span class="fl">.1</span>,</a>
@@ -618,9 +619,9 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-69" data-line-number="69"><span class="co">#&gt; [.sosRequest_1.0.0] ... done.</span></a>
 <a class="sourceLine" id="cb15-70" data-line-number="70"><span class="co">#&gt; [.sosRequest_1.0.0] RESPONSE:</span></a>
 <a class="sourceLine" id="cb15-71" data-line-number="71"><span class="co">#&gt; {xml_document}</span></a>
-<a class="sourceLine" id="cb15-72" data-line-number="72"><span class="co">#&gt; &lt;ObservationCollection id=&quot;oc_1555164495358&quot; schemaLocation=&quot;http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd http://www.opengis.net/swe/1.0.1 http://schemas.opengis.net/sweCommon/1.0.1/swe.xsd&quot; xmlns:om=&quot;http://www.opengis.net/om/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:sa=&quot;http://www.opengis.net/sampling/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0.1&quot;&gt;</span></a>
+<a class="sourceLine" id="cb15-72" data-line-number="72"><span class="co">#&gt; &lt;ObservationCollection id=&quot;oc_1565356433585&quot; schemaLocation=&quot;http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd http://www.opengis.net/swe/1.0.1 http://schemas.opengis.net/sweCommon/1.0.1/swe.xsd&quot; xmlns:om=&quot;http://www.opengis.net/om/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:sa=&quot;http://www.opengis.net/sampling/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0.1&quot;&gt;</span></a>
 <a class="sourceLine" id="cb15-73" data-line-number="73"><span class="co">#&gt; [1] &lt;gml:boundedBy&gt;\n  &lt;gml:Envelope srsName=&quot;urn:ogc:def:crs:EPSG::4326 ...</span></a>
-<a class="sourceLine" id="cb15-74" data-line-number="74"><span class="co">#&gt; [2] &lt;om:member&gt;\n  &lt;om:Observation gml:id=&quot;o_1555164495358&quot;&gt;\n    &lt;om:sa ...</span></a>
+<a class="sourceLine" id="cb15-74" data-line-number="74"><span class="co">#&gt; [2] &lt;om:member&gt;\n  &lt;om:Observation gml:id=&quot;o_1565356433585&quot;&gt;\n    &lt;om:sa ...</span></a>
 <a class="sourceLine" id="cb15-75" data-line-number="75"><span class="co">#&gt; [sos4R] Received response (object size: 784 bytes), parsing ...</span></a>
 <a class="sourceLine" id="cb15-76" data-line-number="76"><span class="co">#&gt; [.getObservation_1.0.0] Got XML document as response.</span></a>
 <a class="sourceLine" id="cb15-77" data-line-number="77"><span class="co">#&gt; [.getObservation_1.0.0] Parsing with function function (obj, sos, verbose = FALSE) </span></a>
@@ -642,7 +643,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-93" data-line-number="93"><span class="co">#&gt;     }</span></a>
 <a class="sourceLine" id="cb15-94" data-line-number="94"><span class="co">#&gt;     return(.om)</span></a>
 <a class="sourceLine" id="cb15-95" data-line-number="95"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb15-96" data-line-number="96"><span class="co">#&gt; &lt;bytecode: 0x6952748&gt;</span></a>
+<a class="sourceLine" id="cb15-96" data-line-number="96"><span class="co">#&gt; &lt;bytecode: 0x563f8fb099f8&gt;</span></a>
 <a class="sourceLine" id="cb15-97" data-line-number="97"><span class="co">#&gt; &lt;environment: namespace:sos4R&gt;</span></a>
 <a class="sourceLine" id="cb15-98" data-line-number="98"><span class="co">#&gt; [parseOM] Matched name for parser is om:ObservationCollection </span></a>
 <a class="sourceLine" id="cb15-99" data-line-number="99"><span class="co">#&gt; [parseObservationCollection] with  1 element(s).</span></a>
@@ -650,7 +651,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-101" data-line-number="101"><span class="co">#&gt; [parseOM] Matched name for parser is om:member </span></a>
 <a class="sourceLine" id="cb15-102" data-line-number="102"><span class="co">#&gt; [parseObservationProperty] Parsing child of member: om:Observation </span></a>
 <a class="sourceLine" id="cb15-103" data-line-number="103"><span class="co">#&gt; [parseOM] Matched name for parser is om:Observation </span></a>
-<a class="sourceLine" id="cb15-104" data-line-number="104"><span class="co">#&gt; [parseObservation] o_1555164495358 </span></a>
+<a class="sourceLine" id="cb15-104" data-line-number="104"><span class="co">#&gt; [parseObservation] o_1565356433585 </span></a>
 <a class="sourceLine" id="cb15-105" data-line-number="105"><span class="co">#&gt; [parsePhenomenonProperty] with reference AthmosphericPressure </span></a>
 <a class="sourceLine" id="cb15-106" data-line-number="106"><span class="co">#&gt; [parseTime] Entering</span></a>
 <a class="sourceLine" id="cb15-107" data-line-number="107"><span class="co">#&gt; [parseTime] Found time period</span></a>
@@ -682,7 +683,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-133" data-line-number="133"><span class="co">#&gt;     .t &lt;- as.POSIXct(x = strptime(x = x, format = sosTimeFormat(sos = sos)))</span></a>
 <a class="sourceLine" id="cb15-134" data-line-number="134"><span class="co">#&gt;     return(.t)</span></a>
 <a class="sourceLine" id="cb15-135" data-line-number="135"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb15-136" data-line-number="136"><span class="co">#&gt; &lt;bytecode: 0x69e9bf0&gt;</span></a>
+<a class="sourceLine" id="cb15-136" data-line-number="136"><span class="co">#&gt; &lt;bytecode: 0x563f8fb69450&gt;</span></a>
 <a class="sourceLine" id="cb15-137" data-line-number="137"><span class="co">#&gt; &lt;environment: namespace:sos4R&gt;</span></a>
 <a class="sourceLine" id="cb15-138" data-line-number="138"><span class="co">#&gt; [parseValues] Using converter function:</span></a>
 <a class="sourceLine" id="cb15-139" data-line-number="139"><span class="co">#&gt; function (x, sos) </span></a>
@@ -690,7 +691,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-141" data-line-number="141"><span class="co">#&gt;     .t &lt;- as.POSIXct(x = strptime(x = x, format = sosTimeFormat(sos = sos)))</span></a>
 <a class="sourceLine" id="cb15-142" data-line-number="142"><span class="co">#&gt;     return(.t)</span></a>
 <a class="sourceLine" id="cb15-143" data-line-number="143"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb15-144" data-line-number="144"><span class="co">#&gt; &lt;bytecode: 0x69e9bf0&gt;</span></a>
+<a class="sourceLine" id="cb15-144" data-line-number="144"><span class="co">#&gt; &lt;bytecode: 0x563f8fb69450&gt;</span></a>
 <a class="sourceLine" id="cb15-145" data-line-number="145"><span class="co">#&gt; &lt;environment: namespace:sos4R&gt;</span></a>
 <a class="sourceLine" id="cb15-146" data-line-number="146"><span class="co">#&gt; [parseValues] Binding additional data.frame for phenomenonTime -- value range 2018-01-01 00:30:00, 2018-01-03 00:00:00 </span></a>
 <a class="sourceLine" id="cb15-147" data-line-number="147"><span class="co">#&gt; [parseValues] Added column name: phenomenonTime </span></a>
@@ -711,7 +712,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-162" data-line-number="162"><span class="co">#&gt; {</span></a>
 <a class="sourceLine" id="cb15-163" data-line-number="163"><span class="co">#&gt;     return(as.double(x = x))</span></a>
 <a class="sourceLine" id="cb15-164" data-line-number="164"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb15-165" data-line-number="165"><span class="co">#&gt; &lt;bytecode: 0x69f2cf8&gt;</span></a>
+<a class="sourceLine" id="cb15-165" data-line-number="165"><span class="co">#&gt; &lt;bytecode: 0x563f8fb71f18&gt;</span></a>
 <a class="sourceLine" id="cb15-166" data-line-number="166"><span class="co">#&gt; &lt;environment: namespace:sos4R&gt;</span></a>
 <a class="sourceLine" id="cb15-167" data-line-number="167"><span class="co">#&gt; [parseValues] Binding additional data.frame for AthmosphericPressure -- value range 989, 1003 </span></a>
 <a class="sourceLine" id="cb15-168" data-line-number="168"><span class="co">#&gt; [parseValues] Added column name: AthmosphericPressure </span></a>
@@ -737,7 +738,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <a class="sourceLine" id="cb15-188" data-line-number="188"><span class="co">#&gt; [parseTime] Done: GmlTimePosition [ time: 2018-01-01 01:00:00 ] </span></a>
 <a class="sourceLine" id="cb15-189" data-line-number="189"><span class="co">#&gt; [parseOM] Done parsing</span></a>
 <a class="sourceLine" id="cb15-190" data-line-number="190"><span class="co">#&gt; [parseOM] Done parsing</span></a>
-<a class="sourceLine" id="cb15-191" data-line-number="191"><span class="co">#&gt; [parseObservationCollection] Done. Processed 1 elements: ws2500_AthmosphericPressure_sf_7232C146F35F2657299108B16710FFB6A0281279 </span></a>
+<a class="sourceLine" id="cb15-191" data-line-number="191"><span class="co">#&gt; [parseObservationCollection] Done. Processed 1 elements: ws2500_AthmosphericPressure_sf_6CDEBFA1EC9556CF0D23CC12569D98D2F2771C72 </span></a>
 <a class="sourceLine" id="cb15-192" data-line-number="192"><span class="co">#&gt; [parseOM] Done parsing</span></a>
 <a class="sourceLine" id="cb15-193" data-line-number="193"><span class="co">#&gt; [.getObservationById_1.0.0] Got OmObservationCollection ... calculating length with sosResult()[.getObservationById_1.0.0] result:  list(phenomenonTime = c(1514763000, 1514763900, 1514764800, 1514766600, 1514767500, 1514768400, 1514770200, 1514771100, 1514772000, 1514773800, 1514774700, 1514775600, 1514777400, 1514778300, 1514779200, 1514781000, 1514781900, 1514783700, 1514784600, 1514785500, 1514786400, 1514788200, 1514789100, 1514790000, 1514791800, 1514792700, 1514793600, 1514795400, 1514796300, 1514797200, 1514799000, 1514799900, 1514800800, 1514802600, 1514803500, 1514804400, 1514806200, 1514807100, 1514808000, 1514809800, </span></a>
 <a class="sourceLine" id="cb15-194" data-line-number="194"><span class="co">#&gt; 1514810700, 1514811600, 1514813400, 1514814300, 1514815200, 1514817000, 1514817900, 1514818800, 1514820600, 1514821500, 1514822400, 1514824200, 1514825100, 1514826000, 1514827800, 1514828700, 1514829600, 1514831400, 1514832300, 1514833200, 1514835000, 1514835900, 1514836800, 1514838600, 1514839500, 1514840400, 1514842200, 1514843100, 1514844000, 1514845800, 1514846700, 1514847600, 1514849400, 1514850300, 1514851200, 1514853000, 1514853900, 1514854800, 1514856600, 1514857500, 1514858400, 1514860200, </span></a>
@@ -778,6 +779,9 @@ The package is published under GPL 2 license within the geostatistics community 
 </ul>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

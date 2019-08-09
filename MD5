@@ -1,6 +1,6 @@
-7f6961a09af8ff38455048d04506e5f6 *DESCRIPTION
+f1c2cff1d47578ae6d0ac8699269d251 *DESCRIPTION
 2f35dd23128415363e59304629ebacdf *NAMESPACE
-7a35e26eb8f76014b1d69c9b1bcb0e7e *NEWS.md
+81341a4be0e53411f6ac7248dedbf60a *NEWS.md
 e827f4528e8e55b02d74efc33d3f24b5 *R/Class-GML.R
 9fefdadaa0cd7528946ab082a034f222 *R/Class-OGC.R
 11cc49bfc0524400ccd3eaee062d5455 *R/Class-OM.R
@@ -15,7 +15,6 @@ fbd02b8750b149effc9dba53166aee4e *R/Class-SOS_200.R
 84ea251adde5a732f7dd2eb365651c01 *R/Class-SOS_200_GDA.R
 13c439f2553b6628b9f7df7ad38d728b *R/Class-SWE.R
 57c79af75e3e8a85ed99f2fc3ab7aaa9 *R/Class-WML_200.R
-db8c3df800bc19999e72faea52229141 *R/Class-XML.R
 90951b02b710ecea129aea873e8af74a *R/Constants.R
 03271a65a0ff7d55d66b912fa9003587 *R/Defaults.R
 a46f05396c1922515fbfe4ce7213c48c *R/Development.R
@@ -52,7 +51,7 @@ d6fb093f9b1645f425ac9554118a4a03 *R/SOS_200_methods-gda.R
 46fa699f0090f66454b78482f5457695 *R/SWE-methods.R
 57706650f143645ea1eec0793d165f88 *R/WML_200-methods-parsing.R
 acf6d9defb2f2e80fb14dba6d3ab47f9 *R/WML_200-methods.R
-3a60461383baac7bbe5add01d8dc9ea9 *build/vignette.rds
+99a99c3de791b0cba189983cc4f13537 *build/vignette.rds
 bde3c5dc4ca71841d5a5adae0d6867e1 *demo/00Index
 7fc0bb818e871ef44c4dd927eff6f1a4 *demo/co-ops.R
 5f9424d04a548dbb0588479464c0bc21 *demo/ioos.R
@@ -60,15 +59,15 @@ bde3c5dc4ca71841d5a5adae0d6867e1 *demo/00Index
 72f13598802e4c6eba7929505e907cc5 *inst/CITATION
 3674ebdafd72750ad9ad538ce19b6ea7 *inst/doc/sos4R-vignette-01-quickstart.R
 56c2cd45d80bbadb89b9f5fce00224bc *inst/doc/sos4R-vignette-01-quickstart.Rmd
-a0778ff60ccfd100f763bbbb54fc6d91 *inst/doc/sos4R-vignette-01-quickstart.html
+3af072a3b6184bfc0fd37628bfd83108 *inst/doc/sos4R-vignette-01-quickstart.html
 1ebe1bff3a45fd02913d633193457eac *inst/doc/sos4R-vignette-02-ogc-sos.Rmd
-13b80d2a3045c04621794d3da2ca7306 *inst/doc/sos4R-vignette-02-ogc-sos.html
+6739c66049c65a0f9c50f2cdde53975f *inst/doc/sos4R-vignette-02-ogc-sos.html
 89b69e44ec3eaed24338896592e82123 *inst/doc/sos4R-vignette-03-sos-operations.R
 45ba52c74ea15ee84c4fb90acdb63831 *inst/doc/sos4R-vignette-03-sos-operations.Rmd
-d091fd95df27c37eccf671056904edd6 *inst/doc/sos4R-vignette-03-sos-operations.html
+bd32499f6fcb9fdd3a624c4a7d77b1ad *inst/doc/sos4R-vignette-03-sos-operations.html
 35aae582fc9f7c744928758b9cde685a *inst/doc/sos4R-vignette-04-extensions.R
 9c85eb60f5958ea63315a9b3e338420a *inst/doc/sos4R-vignette-04-extensions.Rmd
-69e7a0469d8d67bbb56ba87e6a38d9e8 *inst/doc/sos4R-vignette-04-extensions.html
+7049629753b60ed88f4e71f209c58cbd *inst/doc/sos4R-vignette-04-extensions.html
 b3f20ae1958285c063774fbaea360163 *inst/sos4r_cheat-sheet.pdf
 a4a5fe9f93be70e2b96c9cd77ce7ac0b *man/Constants.Rd
 33db8293428d72eba0a741d22bf2dc06 *man/Defaults.Rd
@@ -112,7 +111,7 @@ a52bdbd2d5a28013ff9eea30745dfd34 *man/getCapabilities-methods.Rd
 0ffda03bcd29017e355fd7d20f4f5191 *man/getFeatureOfInterest.Rd
 7c8d1aa6516dc41b6ec29ceef9e959cd *man/getObservation-methods.Rd
 4ec5def81a14616de9c12301661dde62 *man/parse.Rd
-dc46f5de7bb1c17c8af53f6d09facf66 *man/sos4R-package.Rd
+b1fa199d73e544427db9f4ff83cb40f4 *man/sos4R-package.Rd
 06e505a959e162d7ab48c407551d393b *man/sosConvert.Rd
 90cd854328196d733df85b5d0e80afaf *man/sosCreate.Rd
 b4536808abfa16afa5f5a46a3818d9a4 *man/sosObservableProperties-methods.Rd

@@ -22,24 +22,26 @@
 \alias{sosDefaultColumnNameSRS}
 \alias{sosDefaultColorPalette}
 \alias{sosDefaultReferenceFrameSensorDescription}
-\alias{sosDefaultServiceVersion}
 
 \alias{SosParsingFunctions}
 \alias{SosEncodingFunctions}
 \alias{SosDisabledParsers}
 \alias{SosDataFieldConvertingFunctions}
-\alias{SosExampleServices}
 \alias{SosResetParsingFunctions}
 
 \alias{SosDefaults}
 \alias{SosDefaults2}
 \alias{SosDefaultParsingOptions}
 
+\alias{sos200DefaultGetObsResponseFormat}
+
+\alias{sosConvertFactor}
+\alias{sosConvertInteger}
 
 \title{Default Parameter Settings and Handling Functions}
 
 \description{
-These values are default parameters and handling functions for connections and requests to, as well as response processing of ansers from, Sensor Observation Services. These allow to simplify a SOS connection for the most common use cases and non-expert users.
+These values are default parameters and handling functions for connections and requests to, as well as response processing of answers from, Sensor Observation Services. These allow to simplify a SOS connection for the most common use cases and non-expert users.
 }
 
 \usage{
@@ -51,8 +53,6 @@ SosDataFieldConvertingFunctions(..., include = character(0), exclude = character
 
 SosDisabledParsers()
 
-SosExampleServices()
-
 SosDefaults()
 
 SosResetParsingFunctions(sos)
@@ -63,9 +63,9 @@ SosDefaultParsingOptions()
 }
 
 \arguments{
-  \item{\dots}{Named references to functions to be used for the respective element during parsing, encoding oder conversion, e.g. \code{"myUnit" = myUnitParser}.}
+  \item{\dots}{Named references to functions to be used for the respective element during parsing, encoding or conversion, e.g. \code{"myUnit" = myUnitParser}.}
   \item{include}{A list of names of elements whose functions shall be included in the returned list, e.g. \code{include = c("GetObservation", "DescribeSensor")}. This inclusion is done \bold{after} replacing the default functions based on the \code{...} argument.}
-  \item{exclude}{A list of names of elements whose functions shall be excluced in the returned list, e.g. \code{exclude = c("DescribeSensor")}. This exclusion is done \bold{after} replacing the default functions based on the \code{...} argument.}
+  \item{exclude}{A list of names of elements whose functions shall be excluded in the returned list, e.g. \code{exclude = c("DescribeSensor")}. This exclusion is done \bold{after} replacing the default functions based on the \code{...} argument.}
   \item{sos}{An object of class \code{SOS}.}
 }
 
@@ -83,11 +83,11 @@ The function \code{SosResetParsingFunctions} can be used to replace the included
 \bold{The default parameter values are:}
 \describe{
 	\item{sosDefaultCharacterEncoding}{\verb{\Sexpr[results=verbatim,stage=render]{sosDefaultCharacterEncoding}}} % "UTF-8"
-	\item{sosDefaultDescribeSensorOutputFormat}{\verb{\Sexpr[results=text,stage=render]{sosDefaultDescribeSensorOutputFormat}}} % SosSupportedResponseFormats()[2]
+	\item{sosDefaultDescribeSensorOutputFormat}{\verb{\Sexpr[results=text,stage=render]{sosDefaultDescribeSensorOutputFormat}}}
 	\item{sosDefaultGetCapSections}{\verb{\Sexpr[results=text,stage=render]{sosDefaultGetCapSections}}} % c("All")
 	\item{sosDefaultGetCapAcceptFormats}{\verb{\Sexpr[results=text,stage=render]{sosDefaultGetCapAcceptFormats}}} % c("text/xml")
 	\item{sosDefaultGetCapOwsVersion}{\verb{\Sexpr[results=text,stage=render]{sosDefaultGetCapOwsVersion}}} % "1.1.0"
-	\item{sosDefaultGetObsResponseFormat}{\verb{\Sexpr[results=text,stage=render]{sosDefaultGetObsResponseFormat}}} % SosSupportedResponseFormats()[1]
+	\item{sosDefaultGetObsResponseFormat}{\verb{\Sexpr[results=text,stage=render]{sosDefaultGetObsResponseFormat}}}
 	\item{sosDefaultTimeFormat}{\verb{\Sexpr[results=text,stage=render]{sosDefaultTimeFormat}}} % "%Y-%m-%dT%H:%M:%OS"
 	\item{sosDefaultFilenameTimeFormat}{\verb{\Sexpr[results=text,stage=render]{sosDefaultFilenameTimeFormat}}} %
 	\item{sosDefaultTempOpPropertyName}{\verb{\Sexpr[results=text,stage=render]{sosDefaultTempOpPropertyName}}} % "om:samplingTime"
@@ -122,58 +122,56 @@ SosDefaultBinding()
 # usage of defaults in construction method for SOS class
 sos <- SOS("http://mysos.com/sos", binding = SosDefaultBinding(),
 		timeFormat = sosDefaultTimeFormat)
-}
 
 # functions to disable all parsing
 SosDisabledParsers()
+}
+
 
 # Replace a parsing function
 myER <- function(xml) {
 	return("EXCEPTION!!!11")
 }
-SosParsingFunctions("ExceptionReport" = myER)
+myParsingFunctions <- SosParsingFunctions("ExceptionReport" = myER)
 
 # use inclusion and exclusion, important: even the just added function needs to
 # be included manually!
-SosParsingFunctions("ExceptionReport" = myER,
+myParsingFunctions <- SosParsingFunctions("ExceptionReport" = myER,
 	include = c("GetObservation", "DescribeSensor", "ExceptionReport"))
-SosParsingFunctions(exclude = c("GetObservation", "DescribeSensor"))
+
+myParsingFunctions <- SosParsingFunctions(exclude = c("GetObservation", "DescribeSensor"))
 
 \dontrun{
 # Replace an encoding function
 myEncoding <- function(object, v) {
-	return(str(object))
+	return(utils::str(object))
 }
 
 sos = SOS(url = "http://mysos.com/sos",
 		encoders = SosEncodingFunctions("POST" = myPostEncoding))
 
+
 # Use custom converting function and connection method. This mechanism works the
 # same for encoders and decoders.
 myConverters <- SosDataFieldConvertingFunctions(
-	"myNumericUnit" = sosConvertDouble,
+	"myNumericUnit" = sosConvertDouble)
 mySos <- SOS(sos.url, binding = "KVP", dataFieldConverters = myConverters)
 sosDataFieldConverters(mySos)
 
 # inspecting XML using dummy parsing function
 sos = SOS(url = "http://mysos.com/sos", parsers = SosDisabledParsers)
 describeSensor(sos, sosProcedures(sos)[[1]])
-}
 
-# a list of example services
-SosExampleServices()
+# replace the parsing functions with the default ones
+sos <- SosResetParsingFunctions(sos)
+
+}
 
 # a named list of all defaults
 SosDefaults()
 
-# replace the parsing functions with the default ones
-\dontrun{
-sos <- SosResetParsingFunctions(sos)
-}
-
 # parsing options used by xml2
 SosDefaultParsingOptions()
-
 }
 
 \keyword{misc}

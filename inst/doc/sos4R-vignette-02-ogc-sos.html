@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2019-08-09" />
+<meta name="date" content="2020-04-28" />
 
-<title>sos4R: OGC SWE and SOS</title>
+<title>Introduction to OGC SWE and SOS</title>
 
 
 
@@ -41,9 +40,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -212,7 +208,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -225,12 +222,12 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 
-<h1 class="title toc-ignore">sos4R: OGC SWE and SOS</h1>
+<h1 class="title toc-ignore">Introduction to OGC SWE and SOS</h1>
 <h4 class="author">Daniel Nüst</h4>
 <address class="author_afil">
 Institute for Geoinformatics, University of Münster, Germany.<br><a class="author_email" href="mailto:#"><a href="mailto:daniel.nuest@uni-muenster.de" class="email">daniel.nuest@uni-muenster.de</a></a>
 </address>
-<h4 class="date">2019-08-09</h4>
+<h4 class="date">2020-04-28</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 <p>The sos4R package provides simple yet powerful access to OGC Sensor Observation Service instances. The package supports both encapsulation and abstraction from the service interface for novice users as well as powerful request building for specialists. sos4R is motivated by the idea to close the gap between the Sensor Web and tools for (geo-)statistical analyses. It implements the core profile of the SOS specification and supports temporal, spatial, and thematical filtering of observations.</p>
@@ -256,7 +253,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <p>In general, the SOS supports different methods of requesting data, so called bindings: (i) Key-value-pair (KVP) binding using HTTP GET as defined in the <a href="https://web.archive.org/web/20120616065001/http://www.oostethys.org/best-practices/best-practices-get">OOSTethys best practice document</a> (this best-practice paper takes the place of a section in the specification that was left out by mistake; it is well established and (loosely) followed by several SOS implementations), (ii) XML, or plain old XML (POX) using HTTP POST as defined in the standard document with requests encoded in eXtensible Markup Language (<a href="http://www.w3.org/XML/">XML</a>), and (iii) SOAP (<a href="https://en.wikipedia.org/wiki/SOAP">Simple Object Access Protocol</a>). All bindings can return responses using different encodings, but most common are XML documents.</p>
 <p>Other OGC Standards that are referenced and used, by the SOS standard are as follows.</p>
 <ul>
-<li><strong>Observations and Measurements (O&amp;M)</strong> O&amp;M (Cox, 2007) defines the markup of sensor measurements results. An observation consists of information about the observerd geographic feature, the time of observation, the sensor, the observed phenomenon, and the observation’s actual result. Different versions are used in the different <a href="https://www.opengeospatial.org/standards/om">SOS specifications</a>.</li>
+<li><strong>Observations and Measurements (O&amp;M)</strong> O&amp;M (Cox, 2007) defines the markup of sensor measurements results. An observation consists of information about the observed geographic feature, the time of observation, the sensor, the observed phenomenon, and the observation’s actual result. Different versions are used in the different <a href="https://www.opengeospatial.org/standards/om">SOS specifications</a>.</li>
 <li><strong>Sensor Model Language (<a href="https://www.opengeospatial.org/standards/sensorml">SensorML</a>)</strong> (Botts, 2007) is used for sensor metadata descriptions (calibration information, inputs and outputs, maintainer).</li>
 <li><strong>Geography Markup Language (<a href="https://www.opengeospatial.org/standards/gml">GML</a>)</strong> (Portele, 2003) defines markup for geographical features (points, lines, polygons, ).</li>
 <li><strong>SWE Common</strong> defines data markup. Version 1 is contained in the SensorML specification (see above), version 2.0 is an independent specification.</li>
@@ -270,7 +267,7 @@ The package is published under GPL 2 license within the geostatistics community 
 <p>The OGC has a particular set of well-defined terms that might differ from usage of words in specific domains. The most important are as follows and are based on <a href="https://en.wikipedia.org/wiki/Sensor_Observation_Service" class="uri">https://en.wikipedia.org/wiki/Sensor_Observation_Service</a>.</p>
 <ul>
 <li><strong>Feature of Interest (FOI)</strong>: The FOI represents the geo-object, for which measurements are made by sensors. It is ordinarily used for the spatial referencing of measuring points, i.e. the geoobject has coordinates like latitude, longitude and height. The feature is project specific and can be anything from a point (e.g. the position of a measuring station) or a real-world object (e.g. the region that is observed).</li>
-<li><strong>Observation</strong>: The observation delivers a measurement (result) for a property (phenomenon) of an observed object (FOI). The actual value is created by a sensor or procedure. The phenomenon was measured at a specific time (sampling time) and the value was generated at a specific point in time (result time). These often coincide so in practice the sampling time is often used as the point in time of an obsrevation.</li>
+<li><strong>Observation</strong>: The observation delivers a measurement (result) for a property (phenomenon) of an observed object (FOI). The actual value is created by a sensor or procedure. The phenomenon was measured at a specific time (sampling time) and the value was generated at a specific point in time (result time). These often coincide so in practice the sampling time is often used as the point in time of an observation.</li>
 <li><strong>Offering</strong>: The offering is a logical collection of related observations (similar to a layer in mapping applications) which a service offers together.</li>
 <li><strong>Phenomenon</strong>: A phenomenon is a property (physical value) of a geographical object, e.g. air temperature, wind speed, concentration of a pollutant in the atmosphere, reflected radiation in a specific frequency band (colours).</li>
 <li><strong>Procedure</strong>: A procedure creates the measurement value of an observation. The source can be a reading from a sensor, simulation or a numerical process.</li>

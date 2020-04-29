@@ -19,7 +19,7 @@ sosConvertLogical(x, sos)
 
 \arguments{
   \item{x}{The object to be converted.}
-  \item{sos}{An object of class \code{SOS}, whose settings, like formating information, can be utilitzed.}
+  \item{sos}{An object of class \code{SOS}, whose settings, like formating information, can be utilized.}
 }
 
 \details{
@@ -40,7 +40,7 @@ There are functions to access the converters of a SOS (\code{\link{sosDataFieldC
 \examples{
 
 \dontrun{
-sos <- SOS(url = SosExampleServices()[[2]])
+sos <- SOS_Test()
 one <- sosConvertDouble("1", sos)
 class(one)
 

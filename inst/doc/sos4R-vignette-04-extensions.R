@@ -1,9 +1,9 @@
-## ----library_testsos-----------------------------------------------------
+## ----library_testsos----------------------------------------------------------
 library("sos4R")
 mySOS <- SOS(url = "http://sensorweb.demo.52north.org/52n-sos-webapp/service/pox",
              binding = "POX", dcpFilter = list("POX" = "/pox"))
 
-## ----function_inclusion_1------------------------------------------------
+## ----function_inclusion_1-----------------------------------------------------
 parsers <- SosParsingFunctions(
 	"ExceptionReport" = function() {
 		return("Got Exception!")
@@ -12,7 +12,7 @@ parsers <- SosParsingFunctions(
 print(names(parsers))
 
 
-## ----function_inclusion_2------------------------------------------------
+## ----function_inclusion_2-----------------------------------------------------
 parsers <- SosParsingFunctions(
 		"ExceptionReport" = function() {
 			return("Got Exception!")
@@ -20,30 +20,30 @@ parsers <- SosParsingFunctions(
 		include = c("GetCapabilities"))
 print(names(parsers))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 parsers <- SosParsingFunctions(
 		exclude = names(SosParsingFunctions())[5:29])
 print(names(parsers))
 
-## ----encoders_access, eval=FALSE-----------------------------------------
+## ----encoders_access, eval=FALSE----------------------------------------------
 #  sosEncoders(mySOS)
 
-## ----encoders_names------------------------------------------------------
+## ----encoders_names-----------------------------------------------------------
 names(sosEncoders(mySOS))
 
-## ----encoders_own, eval=FALSE--------------------------------------------
+## ----encoders_own, eval=FALSE-------------------------------------------------
 #  myPostEncoding <- function(object, sos, verbose) {
-#  	return(str(object))
+#  	return(utils::str(object))
 #  }
 #  # Connection will not be established because of mising objects
 #  mySOS2 = SOS(sosUrl(mySOS),
 #  	encoders = SosEncodingFunctions("POST" = myPostEncoding))
 
-## ----encoders_show-------------------------------------------------------
+## ----encoders_show------------------------------------------------------------
 showMethods("encodeXML")
 showMethods("encodeKVP")
 
-## ----encoders_override, echo=TRUE, eval=FALSE----------------------------
+## ----encoders_override, echo=TRUE, eval=FALSE---------------------------------
 #  setMethod(f = "encodeXML",
 #    signature = signature(obj = "POSIXt", sos = "SOS"),
 #      def = function(obj, sos, verbose) {
@@ -63,13 +63,13 @@ showMethods("encodeKVP")
 #      }
 #  )
 
-## ---- echo=TRUE, eval=FALSE----------------------------------------------
+## ---- echo=TRUE, eval=FALSE---------------------------------------------------
 #  sosParsers(mySOS)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 names(sosParsers(mySOS))
 
-## ----parsers_load_or_download--------------------------------------------
+## ----parsers_load_or_download-------------------------------------------------
 # Create own parsing function:
 myER <- function(xml, sos, verbose) {
 	return("EXCEPTION!!!11")
@@ -85,13 +85,13 @@ erroneousResponse <- getObservation(exceptionParserSOS,
                                     observedProperty = list("Bazinga!"))
 print(erroneousResponse)
 
-## ----parsers_disabled, eval=FALSE----------------------------------------
+## ----parsers_disabled, eval=FALSE---------------------------------------------
 #  SosDisabledParsers()
 
-## ----parsers_disabled_names----------------------------------------------
+## ----parsers_disabled_names---------------------------------------------------
 names(SosDisabledParsers())
 
-## ----reponse_passthrough-------------------------------------------------
+## ----reponse_passthrough------------------------------------------------------
 disabledParserSOS <- SOS(sosUrl(mySOS),
                          parsers = SosDisabledParsers(),
                          binding = sosBinding(mySOS),
@@ -104,7 +104,7 @@ class(unparsed)
 # document and the name of an element.)
 unparsed
 
-## ----converters0---------------------------------------------------------
+## ----converters0--------------------------------------------------------------
 value <- 2.0
 value.string <- sosConvertString(x = value, sos = mySOS)
 print(class(value.string))
@@ -121,23 +121,23 @@ value <- "2010-01-01T12:00:00.000"
 value.time <- sosConvertTime(x = value, sos = mySOS)
 print(class(value.time))
 
-## ----converters1---------------------------------------------------------
+## ----converters1--------------------------------------------------------------
 names(SosDataFieldConvertingFunctions())
 
-## ----converters2, eval=FALSE---------------------------------------------
+## ----converters2, eval=FALSE--------------------------------------------------
 #  sosDataFieldConverters(mySOS)
 
-## ----converters3a--------------------------------------------------------
+## ----converters3a-------------------------------------------------------------
 testsos <- SOS("http://sensorweb.demo.52north.org/52n-sos-webapp/sos/pox", binding = "POX", dcpFilter = list("POX" = "/pox"))
 testsosoffering <- sosOfferings(testsos)[["http___www.52north.org_test_offering_1"]]
 testsosobsprop <- sosObservedProperties(testsosoffering)[1]
 getObservation(sos = testsos, offering = testsosoffering, observedProperty = testsosobsprop)
 
-## ----converters3c--------------------------------------------------------
+## ----converters3c-------------------------------------------------------------
 getObservation(sos = testsos, offering = testsosoffering, observedProperty = testsosobsprop,
                inspect = TRUE)
 
-## ----converters3d--------------------------------------------------------
+## ----converters3d-------------------------------------------------------------
 testconverters <- SosDataFieldConvertingFunctions(
   # one of the following would suffice
   "test_unit_1" = sosConvertDouble,
@@ -149,26 +149,26 @@ testsos <- SOS("http://sensorweb.demo.52north.org/52n-sos-webapp/sos/pox", bindi
 testsosoffering <- sosOfferings(testsos)[["http___www.52north.org_test_offering_1"]]
 data <- getObservation(sos = testsos, offering = testsosoffering, observedProperty = testsosobsprop)
 
-## ----converters3e--------------------------------------------------------
+## ----converters3e-------------------------------------------------------------
 head(sosResult(data))
 
-## ----converters3f--------------------------------------------------------
+## ----converters3f-------------------------------------------------------------
 attributes(sosResult(data)[[1]])
 
-## ----converters4---------------------------------------------------------
+## ----converters4--------------------------------------------------------------
 myConverters <- SosDataFieldConvertingFunctions(
 	"S/m" = sosConvertDouble,
 	"http://mmisw.org/ont/cf/parameter/sea_water_salinity"
 			= sosConvertDouble)
 
-## ----exceptionData-------------------------------------------------------
+## ----exceptionData------------------------------------------------------------
 library("knitr")
 knitr::kable(OwsExceptionsData())
 
-## ----exceptionWarning1---------------------------------------------------
+## ----exceptionWarning1--------------------------------------------------------
 response <- try(getObservationById(sos = mySOS,
                                    observationId = ""))
 
-## ----exceptionWarning2d--------------------------------------------------
+## ----exceptionWarning2d-------------------------------------------------------
 response
 

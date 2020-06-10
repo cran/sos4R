@@ -52,7 +52,6 @@ str(tail(sites_with_temporal_bbox, n = 3)[,1:maxOutputColumnsPerExample])
 ## ----sites_filtered_by_phenomena----------------------------------------------
 sites_filtered_by_phenomena <- sites(sos = mySos, phenomena = phenomena[3,])
 nrow(sites_filtered_by_phenomena@data)
-nrow(sites@data)
 str(sites_filtered_by_phenomena)
 
 ## ----sites_filtered_by_phenomena_with_metadata--------------------------------

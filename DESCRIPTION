@@ -1,7 +1,7 @@
 Package: sos4R
 Type: Package
 Title: Client for OGC Sensor Observation Services
-Version: 0.4.1
+Version: 0.4.2
 Date: 2020-06-09
 Authors@R: 
   c(person(given = "Daniel",
@@ -31,7 +31,7 @@ Imports: dplyr, httr, methods, parsedate, sp, stats, stringr, uuid,
         xml2 (>= 1.2.2),
 Suggests: readr, spacetime, leaflet, leafpop, mapdata, maps, maptools,
         mapview, xts, testthat, rgdal, knitr, rmarkdown, webmockr,
-        kableExtra, skimr, clipr
+        kableExtra, skimr, clipr, units
 Description: A client for Sensor Observation Services (SOS, see
     <https://www.opengeospatial.org/standards/sos>) as specified by the
     Open Geospatial Consortium (OGC). With the package users can
@@ -66,7 +66,7 @@ Collate: Constants.R caches.R R-Helper.R Class-OWS.R Class-GML.R
 RoxygenNote: 7.1.0
 Language: en-GB
 NeedsCompilation: no
-Packaged: 2020-06-10 12:50:49 UTC; daniel
+Packaged: 2020-07-09 12:43:41 UTC; daniel
 Author: Daniel Nuest [cre, aut] (<https://orcid.org/0000-0002-0024-5046>),
   Edzer Pebesma [ctb] (<https://orcid.org/0000-0001-8049-7069>),
   Ben Graeler [aut] (<https://orcid.org/0000-0001-5443-4304>),
@@ -75,4 +75,4 @@ Author: Daniel Nuest [cre, aut] (<https://orcid.org/0000-0002-0024-5046>),
   52°North Initiative for Geospatial Open Source Software GmbH [cph]
 Maintainer: Daniel Nuest <daniel.nuest@uni-muenster.de>
 Repository: CRAN
-Date/Publication: 2020-06-10 19:50:03 UTC
+Date/Publication: 2020-07-09 14:00:07 UTC

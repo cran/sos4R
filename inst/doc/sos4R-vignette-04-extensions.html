@@ -11,10 +11,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2020-06-10" />
+<meta name="date" content="2020-07-09" />
 
 <title>Extending sos4R and advanced configuration</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -315,7 +331,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <address class="author_afil">
 Institute for Geoinformatics, University of Münster, Germany.<br><a class="author_email" href="mailto:#"><a href="mailto:daniel.nuest@uni-muenster.de" class="email">daniel.nuest@uni-muenster.de</a></a>
 </address>
-<h4 class="date">2020-06-10</h4>
+<h4 class="date">2020-07-09</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 <p>The sos4R package provides simple yet powerful access to OGC Sensor Observation Service instances. The package supports both encapsulation and abstraction from the service interface for novice users as well as powerful request building for specialists. sos4R is motivated by the idea to close the gap between the Sensor Web and tools for (geo-)statistical analyses.</p>
@@ -664,9 +680,9 @@ Institute for Geoinformatics, University of Münster, Germany.<br><a class="auth
 ## [3] &lt;sos:responseFormat&gt;text/xml;subtype=&quot;om/1.0.0&quot;&lt;/sos:responseFormat&gt;
 ## [.getObservation_1.0.0] RESPONSE DOC:
 ## {xml_document}
-## &lt;ObservationCollection id=&quot;oc_1591792879133&quot; schemaLocation=&quot;http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd http://www.opengis.net/swe/1.0.1 http://schemas.opengis.net/sweCommon/1.0.1/swe.xsd&quot; xmlns:om=&quot;http://www.opengis.net/om/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:sa=&quot;http://www.opengis.net/sampling/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0.1&quot;&gt;
+## &lt;ObservationCollection id=&quot;oc_1594298017593&quot; schemaLocation=&quot;http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/om.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosAll.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd http://www.opengis.net/swe/1.0.1 http://schemas.opengis.net/sweCommon/1.0.1/swe.xsd&quot; xmlns:om=&quot;http://www.opengis.net/om/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:sa=&quot;http://www.opengis.net/sampling/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0.1&quot;&gt;
 ## [1] &lt;gml:boundedBy&gt;\n  &lt;gml:Envelope srsName=&quot;urn:ogc:def:crs:EPSG::4326&quot;&gt;\n  ...
-## [2] &lt;om:member&gt;\n  &lt;om:Observation gml:id=&quot;o_1591792879133&quot;&gt;\n    &lt;om:samplin ...</code></pre>
+## [2] &lt;om:member&gt;\n  &lt;om:Observation gml:id=&quot;o_1594298017594&quot;&gt;\n    &lt;om:samplin ...</code></pre>
 <pre><code>## Object of class OmObservationCollection with 1 members.</code></pre>
 <p>Converters may be matched by XML properties <code>swe:Quantity[@definition]</code> or <code>swe:uom[@code]</code>.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>testconverters &lt;-<span class="st"> </span><span class="kw">SosDataFieldConvertingFunctions</span>(</span>
@@ -682,19 +698,19 @@ Institute for Geoinformatics, University of Münster, Germany.<br><a class="auth
 <p>Then retrieve the data with the correct type.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">head</span>(<span class="kw">sosResult</span>(data))</span></code></pre></div>
 <pre><code>##                        phenomenonTime
-## o_1591792879650.1 2012-11-19 13:00:00
-## o_1591792879650.2 2012-11-19 13:01:00
-## o_1591792879650.3 2012-11-19 13:02:00
-## o_1591792879650.4 2012-11-19 13:03:00
-## o_1591792879650.5 2012-11-19 13:04:00
-## o_1591792879650.6 2012-11-19 13:05:00
+## o_1594298017973.1 2012-11-19 13:00:00
+## o_1594298017973.2 2012-11-19 13:01:00
+## o_1594298017973.3 2012-11-19 13:02:00
+## o_1594298017973.4 2012-11-19 13:03:00
+## o_1594298017973.5 2012-11-19 13:04:00
+## o_1594298017973.6 2012-11-19 13:05:00
 ##                   http://www.52north.org/test/observableProperty/1
-## o_1591792879650.1                                              1.0
-## o_1591792879650.2                                              1.1
-## o_1591792879650.3                                              1.2
-## o_1591792879650.4                                              1.3
-## o_1591792879650.5                                              1.4
-## o_1591792879650.6                                              1.5</code></pre>
+## o_1594298017973.1                                              1.0
+## o_1594298017973.2                                              1.1
+## o_1594298017973.3                                              1.2
+## o_1594298017973.4                                              1.3
+## o_1594298017973.5                                              1.4
+## o_1594298017973.6                                              1.5</code></pre>
 <p>The metadata of the observed property is also accessible.</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a><span class="kw">attributes</span>(<span class="kw">sosResult</span>(data)[[<span class="dv">1</span>]])</span></code></pre></div>
 <pre><code>## $class
@@ -773,6 +789,13 @@ No converter found! Skipping field S/m</code></pre>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="kw">library</span>(<span class="st">&quot;knitr&quot;</span>)</span>
 <span id="cb52-2"><a href="#cb52-2"></a>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">OwsExceptionsData</span>())</span></code></pre></div>
 <table>
+<colgroup>
+<col width="9%"></col>
+<col width="60%"></col>
+<col width="14%"></col>
+<col width="5%"></col>
+<col width="8%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">exceptionCode</th>
